@@ -1,17 +1,13 @@
 # 祖仁泽个人网站
 
-个人介绍、军旅与职业经历，以及读书、运动和 IP＋AI 探索。
+中文个人网站，以黑白、暖灰和大字号为主要视觉语言，展示本人真实经历与照片。
 
-使用原生 HTML、CSS、JavaScript，无需构建和安装依赖。
+- 首页：个人介绍
+- 关于我：职业背景与探索方向
+- 个人经历：法学、军旅和企业监察
+- 阅读与生活：阅读、音乐、运动与寺院生活
+- 保持联系：飞书个人介绍入口
 
-## GitHub Pages
+原生 HTML、CSS、JavaScript，无构建依赖。main 分支根目录通过 GitHub Pages 发布。
 
-将仓库的 main 分支根目录设为 Pages 发布来源即可部署。相对资源路径支持 GitHub Pages 项目站点。
-
-## 文件
-
-- index.html：页面内容
-- style.css：响应式样式
-- script.js：分类筛选与详情弹窗
-
-个人资料来源于本人提供的飞书文档。
+网址：https://zurenze1.github.io/zurenze-personal-site/
