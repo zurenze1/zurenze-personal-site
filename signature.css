@@ -1,0 +1,47 @@
+/* The homepage's personal story and reading shelf. */
+.signature-route,.signature-library{margin:70px 0 100px;padding-top:48px;border-top:1px solid var(--line,#dbe2e3)}
+.signature-heading{display:flex;align-items:end;justify-content:space-between;gap:40px;margin-bottom:36px}
+.signature-heading h2{font-family:var(--serif,"Songti SC",serif);font-size:38px;line-height:1.55;margin-top:14px;letter-spacing:.02em}
+.signature-heading>p{color:var(--muted,#64727b);font-size:15px;line-height:1.9;max-width:345px}
+.signature-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--line,#dbe2e3);margin-bottom:30px;gap:0}
+.signature-tabs a{padding:19px 22px 22px;border:0;border-bottom:3px solid transparent;transition:background .2s;border-radius:2px 2px 0 0}
+.signature-tabs small{font-size:12px;color:var(--muted);display:block;line-height:1.6;margin-bottom:9px}
+.signature-tabs a>span{display:flex;align-items:baseline;justify-content:space-between;font:600 25px/1.5 var(--serif,"Songti SC",serif)}
+.signature-tabs .case-trait{font:13px/1.5 var(--sans,sans-serif);color:var(--muted);letter-spacing:.08em}
+.signature-tabs a:hover{background:var(--wash,#eef2f3)}
+.signature-tabs a[aria-selected=true]{background:var(--ink,#192d38);color:var(--paper,#fafbf9);border-bottom-color:#83a9c0}
+.signature-tabs a[aria-selected=true] small,.signature-tabs a[aria-selected=true] .case-trait{color:#c0cfd5}
+.signature-case{display:grid;grid-template-columns:1.08fr 1fr;gap:50px;align-items:center;margin:0 0 30px}
+.signature-case figure{position:relative;background:var(--wash,#eef2f3);overflow:hidden;border-radius:2px}
+.signature-case figure img{width:100%;height:390px;object-fit:cover;filter:none}
+.signature-case figure figcaption{font-size:12px;line-height:1.7;color:var(--muted);padding:13px 17px;background:var(--wash,#eef2f3)}
+#case-military figure img{object-fit:contain;background:#202825}
+#case-work figure img{object-position:center 25%}
+#case-explore figure img{object-position:center 25%}
+.case-copy{padding:10px 0}.case-kicker{font-size:13px;line-height:1.7;color:var(--blue,#244e68);letter-spacing:.05em}
+.case-copy h3{font:600 31px/1.65 var(--serif,"Songti SC",serif);margin:18px 0}
+.case-copy>p:not(.case-kicker){font-size:16px;line-height:1.95;color:var(--muted);max-width:470px}
+.case-fact{display:flex;gap:24px;align-items:center;margin:28px 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.case-fact strong{font:500 37px/1.3 var(--serif,"Songti SC",serif);letter-spacing:.03em}
+.case-fact span{font-size:13px;line-height:1.8;color:var(--muted)}
+.signature-route-note{display:flex;justify-content:space-between;gap:20px;color:var(--muted);font-size:13px}
+.signature-route-note a{color:var(--blue)}
+.signature-library{margin-top:0}.shelf-controls{display:flex;justify-content:space-between;align-items:center;gap:20px;margin:0 0 28px;font-size:13px;color:var(--muted)}
+.shelf-controls>div{display:flex;gap:10px}.shelf-controls button{background:transparent;color:var(--muted);border:1px solid var(--line);padding:8px 15px;border-radius:30px;font-size:13px;line-height:1.6}
+.shelf-controls button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.signature-shelf{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:22px;align-items:start}
+.signature-book{display:block;min-width:0}.signature-cover{position:relative;aspect-ratio:3/4;min-height:245px;padding:20px 17px;display:flex;flex-direction:column;border-left:5px solid #0002;overflow:hidden;isolation:isolate;transition:transform .2s,box-shadow .2s}
+.signature-book:hover .signature-cover{transform:translateY(-6px);box-shadow:0 10px 20px #192d3815}
+.cover-number{font-size:12px;letter-spacing:.08em;line-height:1.6;opacity:.8}.signature-cover h3{font:600 27px/1.6 var(--serif,"Songti SC",serif);margin:25px 0 18px;position:relative;z-index:1}
+.cover-author{font-size:13px;line-height:1.7;margin-top:auto;z-index:1}.cover-symbol{position:absolute;right:10px;bottom:17px;font:100px/1 var(--serif,serif);opacity:.11;z-index:0}
+.cover-savior{background:#233c48;color:#f8f4e8}.cover-ordinary{background:#d8e3eb;color:#253f51}.cover-awareness{background:#35566c;color:#f4f7f7}.cover-destiny{background:#cad9e4;color:#253f51}.cover-sutra{background:#e9eff2;color:#253f51}
+.signature-book-caption{padding:18px 0 0}.signature-book-caption>span{font-size:13px;color:var(--muted);line-height:1.8;display:block}
+.signature-book-caption p{font-size:14px;line-height:1.85;margin:10px 0 15px;color:var(--ink)}.signature-book-caption b{font-size:12px;font-weight:400;color:var(--blue)}
+.signature-shelf-footer{display:flex;align-items:end;justify-content:space-between;gap:25px;margin-top:36px;padding-top:22px;border-top:1px solid var(--line)}
+.signature-shelf-footer p{font-size:13px;line-height:1.8;color:var(--muted)}
+@media(max-width:1000px){.signature-heading h2{font-size:32px}.signature-case{gap:32px}.case-copy h3{font-size:28px}.signature-case figure img{height:365px}.signature-shelf{gap:15px}.signature-cover{padding:17px 12px;min-height:225px}.signature-cover h3{font-size:24px}.cover-number{font-size:12px}.signature-book-caption p{font-size:13px}}
+@media(max-width:760px){.signature-route,.signature-library{margin:45px 0 65px;padding-top:32px}.signature-heading{display:block;margin-bottom:25px}.signature-heading h2{font-size:30px}.signature-heading>p{margin-top:18px;font-size:14px;max-width:none}.signature-tabs{margin-bottom:24px}.signature-tabs a{padding:14px 9px}.signature-tabs small{font-size:12px;white-space:normal}.signature-tabs a>span{font-size:21px;display:block}.signature-tabs .case-trait{display:block;margin-top:5px;font-size:13px}.signature-case{grid-template-columns:1fr;gap:23px;margin-bottom:25px}.signature-case figure img{height:280px}.signature-case figure figcaption{font-size:13px}.case-copy{padding:0}.case-copy h3{font-size:28px;margin:12px 0 17px}.case-copy>p:not(.case-kicker){font-size:16px}.case-fact{margin:23px 0}.case-fact strong{font-size:34px}.signature-route-note{display:block;font-size:12px}.signature-route-note a{display:block;margin-top:12px}.shelf-controls{align-items:start;flex-direction:column;gap:13px}.shelf-controls>div{gap:7px;flex-wrap:wrap}.shelf-controls button{padding:8px 11px;font-size:12px}.signature-shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 18px}.signature-cover{min-height:0;aspect-ratio:3/4;padding:20px 15px}.signature-cover h3{font-size:26px;margin-top:22px}.signature-shelf-footer{align-items:start;flex-direction:column;gap:18px}.signature-library{margin-top:0}}
+@media(max-width:380px){.signature-tabs small{font-size:12px}.signature-heading h2{font-size:27px}.signature-cover h3{font-size:23px}.signature-cover{padding:17px 12px}.cover-author{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.signature-book:hover .signature-cover{transform:none}.signature-cover,.signature-tabs a{transition:none}}
+
+.signature-tabs{align-items:stretch}.signature-tabs a{display:flex;flex-direction:column;justify-content:space-between}.signature-route-note a,.signature-book-caption b,.shelf-controls button{font-size:14px}.signature-book-caption>span{font-size:13px}.cover-number{font-size:12px}.cover-author{font-size:13px}.signature-tabs small{font-size:12px}.signature-book-caption{line-height:1.8}

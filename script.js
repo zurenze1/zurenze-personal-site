@@ -69,60 +69,13 @@ if (bookDetails.length) {
   window.addEventListener('hashchange', () => selectBook(location.hash.slice(1), true));
 }
 
-const musicTracks = {
-  canon: { title: '卡农', performer: '钢琴教学室', bvid: 'BV1K4411N7Nb' },
-  flower: { title: 'Flower Dance · 花之舞', performer: 'up初相识', bvid: 'BV1Q4411h7Xk' }
-};
-const player = document.querySelector('.music-player');
-if (player) {
-  const stage = player.querySelector('.player-stage');
-  const idleContent = stage.firstElementChild.cloneNode(true);
-  const status = player.querySelector('.player-status');
-  const original = player.querySelector('.player-original');
-  const close = player.querySelector('.player-close');
-  const listenButtons = [...document.querySelectorAll('[data-music]')];
-  let activeTrack;
-  listenButtons.forEach(button => button.addEventListener('click', () => {
-    const track = musicTracks[button.dataset.music];
-    if (!track) return;
-    if (activeTrack === button.dataset.music) {
-      stage.querySelector('iframe')?.focus();
-      return;
-    }
-    activeTrack = button.dataset.music;
-    const frame = document.createElement('iframe');
-    frame.src = `https://player.bilibili.com/player.html?bvid=${track.bvid}&p=1&autoplay=1&muted=0&danmaku=0`;
-    frame.title = `${track.title} · ${track.performer}钢琴演奏`;
-    frame.allow = 'autoplay; fullscreen; picture-in-picture';
-    frame.allowFullscreen = true;
-    frame.referrerPolicy = 'strict-origin-when-cross-origin';
-    stage.replaceChildren(frame);
-    status.textContent = `${track.title} · ${track.performer}｜已打开演奏，若未响起，请点播放器里的播放键。`;
-    original.href = `https://www.bilibili.com/video/${track.bvid}/`;
-    original.hidden = false;
-    close.hidden = false;
-    player.classList.add('is-active');
-    listenButtons.forEach(item => {
-      const active = item === button;
-      item.setAttribute('aria-pressed', String(active));
-      item.innerHTML = active ? '<span aria-hidden="true">♫</span> 已选这首' : '<span aria-hidden="true">▶</span> 点击试听';
-    });
-    if (window.matchMedia('(max-width: 800px)').matches) {
-      player.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
-    }
+// Restore the initial anchor after the book and experience panels settle their layout.
+if (location.hash) {
+  const restoreInitialAnchor = () => requestAnimationFrame(() => requestAnimationFrame(() => {
+    const anchor = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    const destination = anchor?.classList.contains('book-detail') ? document.querySelector('.book-reading') : anchor;
+    destination?.scrollIntoView({ block: 'start', behavior: 'instant' });
   }));
-  close.addEventListener('click', () => {
-    const prior = listenButtons.find(button => button.dataset.music === activeTrack);
-    stage.replaceChildren(idleContent.cloneNode(true));
-    activeTrack = undefined;
-    player.classList.remove('is-active');
-    original.hidden = true;
-    close.hidden = true;
-    status.textContent = '音乐已停止。选一首，再听一会儿。';
-    listenButtons.forEach(button => {
-      button.setAttribute('aria-pressed', 'false');
-      button.innerHTML = '<span aria-hidden="true">▶</span> 点击试听';
-    });
-    prior?.focus();
-  });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', restoreInitialAnchor, { once: true });
+  else restoreInitialAnchor();
 }
