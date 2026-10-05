@@ -2,7 +2,7 @@
 
 中文多页面网站。个人资料和五张照片来自本人提供的飞书文档。
 
-网站结构借鉴 https://xiaochens.com/ 的全屏导航与多页面形式；视觉参考 https://www.pinterest.com/pin/1099370959078215606/ ，采用橙红照片首屏、超大中文姓名、白色编辑式内容和黑底橙字页脚。
+网站结构借鉴 https://xiaochens.com/ 的全屏导航与多页面形式。当前视觉参考 https://www.pinterest.com/pin/25966135349298914/ ：米白、荧光黄绿、电光蓝，粗黑大字、细线网格、方形照片卡片和黑色内容区。
 
 本地预览：npm run dev，打开 http://localhost:5173 。
 
