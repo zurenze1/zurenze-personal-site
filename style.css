@@ -21,3 +21,7 @@
 @media(min-width:701px){.hero-manifesto{top:31%}.hero-manifesto>p{font-size:clamp(24px,2.15vw,34px);line-height:1.45}}
 @media(max-width:700px){.hero-image img{object-position:38% 30%}.hero-shade{background:linear-gradient(0deg,#c74624 0%,#d84e2877 30%,transparent 70%),linear-gradient(90deg,#e65930b3 0%,#e6593033 50%,transparent 100%)}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+
+/* Reading and listening links */
+.books article{padding:0}.book-link{display:flex;flex-direction:column;flex:1;padding:24px 16px;transition:background .2s,box-shadow .2s}.book-link:hover{background:#e6593012;box-shadow:inset 0 -3px var(--accent)}.book-link:focus-visible,.music-links a:focus-visible{outline:3px solid var(--accent);outline-offset:4px}.book-action{font-size:11px;color:var(--accent);margin-top:18px;line-height:1.7}.reading-note{font-size:12px;color:var(--muted);margin-top:24px;line-height:1.8}.music-links{display:grid;gap:10px;margin-top:24px}.music-links a{display:flex;align-items:center;justify-content:space-between;gap:15px;border:1px solid var(--line);padding:14px 16px;font-size:14px;transition:border-color .2s,background .2s}.music-links a:hover{border-color:var(--accent);background:#e6593008}.music-links small{display:block;font-size:10px;color:var(--muted);margin:5px 0 0 17px}.music-links b{font-weight:400;color:var(--accent)}
+@media(max-width:700px){.books article{padding:0}.book-link{padding:18px 14px}.book-action{font-size:10px}}
