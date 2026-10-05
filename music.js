@@ -14,6 +14,9 @@
   let backgroundWanted = read('ambient-enabled', 'true') === 'true';
   let waitingForGesture = false;
   let activeTrack = null;
+  const introduction = document.querySelector('#intro-video');
+  let introductionPlaying = false;
+  let pageLeaving = false;
   let audioContext, gain;
   const savedVolume = Number(read('ambient-volume', '12'));
   volume.value = Number.isFinite(savedVolume) ? Math.max(0, Math.min(30, savedVolume)) : 12;
@@ -40,14 +43,14 @@
     toggle.setAttribute('aria-pressed', String(playing));
     toggle.setAttribute('aria-label', playing ? '暂停背景轻音乐' : '开启背景轻音乐');
     dock.classList.toggle('is-playing', playing);
-    label.textContent = playing ? '轻音乐 · 正在轻声播放' : activeTrack ? '轻音乐 · 已暂停' : backgroundWanted ? '轻音乐 · 点击开启' : '轻音乐 · 已关闭';
+    label.textContent = playing ? '轻音乐 · 正在轻声播放' : activeTrack || introductionPlaying ? '轻音乐 · 已暂停' : backgroundWanted ? '轻音乐 · 点击开启' : '轻音乐 · 已关闭';
   }
   async function startBackground() {
-    if (!backgroundWanted || activeTrack) return;
+    if (!backgroundWanted || activeTrack || introductionPlaying || pageLeaving) return;
     waitingForGesture = false;
     try {
       await Promise.all([audioContext?.resume(), background.play()]);
-      if (!backgroundWanted || activeTrack) background.pause();
+      if (!backgroundWanted || activeTrack || introductionPlaying || pageLeaving) background.pause();
       renderBackground();
     } catch (error) {
       waitingForGesture = error.name === 'NotAllowedError' || audioContext?.state === 'suspended';
@@ -66,18 +69,23 @@
   background.addEventListener('error', () => { waitingForGesture = false; label.textContent = '轻音乐 · 暂时无法加载'; });
   volume.addEventListener('input', setVolume);
   document.addEventListener('click', event => {
-    if (waitingForGesture && backgroundWanted && !activeTrack && !event.target.closest('.sound-dock, .music-section')) startBackground();
+    if (waitingForGesture && backgroundWanted && !activeTrack && !event.target.closest('.sound-dock, .music-section, .intro-video-section')) startBackground();
   });
   document.addEventListener('keydown', event => {
-    if (waitingForGesture && backgroundWanted && !activeTrack && ['Enter', ' '].includes(event.key) && !event.target.closest('.sound-dock, .music-section')) startBackground();
+    if (waitingForGesture && backgroundWanted && !activeTrack && ['Enter', ' '].includes(event.key) && !event.target.closest('.sound-dock, .music-section, .intro-video-section')) startBackground();
   });
   window.addEventListener('pagehide', () => {
+    pageLeaving = true;
     save('ambient-position', background.currentTime);
+    pauseIntroduction();
     background.pause();
     song?.pause();
     widget?.pause();
   });
-  window.addEventListener('pageshow', event => { if (event.persisted) startBackground(); });
+  window.addEventListener('pageshow', event => {
+    pageLeaving = false;
+    if (event.persisted) startBackground();
+  });
 
   const player = document.querySelector('.music-player');
   const song = document.querySelector('#song-audio');
@@ -117,6 +125,26 @@
     renderTracks();
     if (resume) startBackground();
   }
+  function pauseIntroduction() {
+    introductionPlaying = false;
+    introduction?.pause();
+  }
+  introduction?.addEventListener('play', () => {
+    introductionPlaying = true;
+    waitingForGesture = false;
+    stopTracks();
+    background.pause();
+    renderBackground();
+  });
+  function introductionStopped() {
+    if (!introductionPlaying) return;
+    introductionPlaying = false;
+    renderBackground();
+    startBackground();
+  }
+  introduction?.addEventListener('pause', introductionStopped);
+  introduction?.addEventListener('ended', introductionStopped);
+  introduction?.addEventListener('error', introductionStopped);
   toggle.addEventListener('click', () => {
     if (!background.paused && !activeTrack) {
       backgroundWanted = false;
@@ -124,6 +152,7 @@
       background.pause();
     } else {
       stopTracks();
+      pauseIntroduction();
       backgroundWanted = true;
       startBackground();
     }
@@ -204,6 +233,7 @@
     buttons.forEach(button => button.addEventListener('click', () => {
       const id = button.dataset.music;
       if (!tracks[id]) return;
+      pauseIntroduction();
       background.pause();
       waitingForGesture = false;
       if (activeTrack === id) {
