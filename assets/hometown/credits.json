@@ -1,0 +1,57 @@
+[
+  {
+    "title": "File:Jiaxiu Pavilion, Guiyang.jpg",
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/Jiaxiu_Pavilion%2C_Guiyang.jpg/1920px-Jiaxiu_Pavilion%2C_Guiyang.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "source": "https://commons.wikimedia.org/wiki/File:Jiaxiu_Pavilion,_Guiyang.jpg",
+    "author": "xiquinhosilva",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "description": "Jiaxiu Pavilion in Guiyang. Taken on 10 June 2018.",
+    "local_file": "jiaxiu.jpg",
+    "changes": "Wikimedia thumbnail used; CSS display cropping only; colors unchanged"
+  },
+  {
+    "title": "File:Qingyan Ancient Town, Guiyang.jpg",
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/81/Qingyan_Ancient_Town%2C_Guiyang.jpg/1920px-Qingyan_Ancient_Town%2C_Guiyang.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "source": "https://commons.wikimedia.org/wiki/File:Qingyan_Ancient_Town,_Guiyang.jpg",
+    "author": "xiquinhosilva",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "description": "Qingyan Ancient Town in Guiyang. Taken on 9 June 2018.",
+    "local_file": "qingyan.jpg",
+    "changes": "Wikimedia thumbnail used; CSS display cropping only; colors unchanged"
+  },
+  {
+    "title": "File:花溪湿地公园 - Huaxi Wetland Park - 2015.07 - panoramio.jpg",
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7b/%E8%8A%B1%E6%BA%AA%E6%B9%BF%E5%9C%B0%E5%85%AC%E5%9B%AD_-_Huaxi_Wetland_Park_-_2015.07_-_panoramio.jpg/1920px-%E8%8A%B1%E6%BA%AA%E6%B9%BF%E5%9C%B0%E5%85%AC%E5%9B%AD_-_Huaxi_Wetland_Park_-_2015.07_-_panoramio.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:%E8%8A%B1%E6%BA%AA%E6%B9%BF%E5%9C%B0%E5%85%AC%E5%9B%AD_-_Huaxi_Wetland_Park_-_2015.07_-_panoramio.jpg",
+    "author": "rheins",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0",
+    "description": "Huaxi Wetland Park - 2015.07",
+    "local_file": "huaxi.jpg",
+    "changes": "Wikimedia thumbnail used; CSS display cropping only; colors unchanged"
+  },
+  {
+    "title": "File:黔灵山.jpg",
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/22/%E9%BB%94%E7%81%B5%E5%B1%B1.jpg/1920px-%E9%BB%94%E7%81%B5%E5%B1%B1.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:%E9%BB%94%E7%81%B5%E5%B1%B1.jpg",
+    "author": "維基小霸王",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "description": "​黔灵山公园",
+    "local_file": "qianling.jpg",
+    "changes": "Wikimedia thumbnail used; CSS display cropping only; colors unchanged"
+  },
+  {
+    "title": "File:酸汤牛肉.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/c/c7/%E9%85%B8%E6%B1%A4%E7%89%9B%E8%82%89.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:%E9%85%B8%E6%B1%A4%E7%89%9B%E8%82%89.jpg",
+    "author": "Leeinm",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "description": "贵州苗族酸汤牛肉",
+    "local_file": "sour-beef.jpg",
+    "changes": "Original downloaded; CSS display cropping only; colors unchanged"
+  }
+]
