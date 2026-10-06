@@ -1,0 +1,249 @@
+{
+  "photo_count": 29,
+  "photos": [
+    {
+      "path": "assets/photos/seaside/coastal-rocks.jpg",
+      "caption": "海边的我 · 带着相机去看看世界",
+      "category": "travel",
+      "destination": "travel.html#seaside-stories",
+      "id": "memory-1",
+      "thumbnail": "assets/orbit/coastal-rocks.webp"
+    },
+    {
+      "path": "assets/photos/military/uniform.jpg",
+      "caption": "军旅留影 · 那时的自己",
+      "category": "military",
+      "destination": "journey.html#journey-military",
+      "id": "memory-2",
+      "thumbnail": "assets/orbit/uniform.webp"
+    },
+    {
+      "path": "assets/photos/travel/travel-red.jpg",
+      "caption": "外出旅行 · 民族服装体验",
+      "category": "travel",
+      "destination": "travel.html#travel-stories",
+      "id": "memory-3",
+      "thumbnail": "assets/orbit/travel-red.webp"
+    },
+    {
+      "path": "assets/photos/graduation/graduation.jpg",
+      "caption": "完成学业，留下一张毕业照。",
+      "category": "campus",
+      "destination": "journey.html#journey-law",
+      "id": "memory-4",
+      "thumbnail": "assets/orbit/graduation.webp"
+    },
+    {
+      "path": "assets/photos/military/comrades.jpg",
+      "caption": "军旅时期，与战友一起留下的合影。",
+      "category": "military",
+      "destination": "journey.html#journey-military",
+      "id": "memory-5",
+      "thumbnail": "assets/orbit/comrades.webp"
+    },
+    {
+      "path": "assets/photos/work/coffee-break.jpg",
+      "caption": "工作之间，喝杯咖啡的片刻。",
+      "category": "work",
+      "destination": "journey.html#journey-work",
+      "id": "memory-6",
+      "thumbnail": "assets/orbit/coffee-break.webp"
+    },
+    {
+      "path": "assets/work-event.jpg",
+      "caption": "活动现场，镜头也是表达的开始。",
+      "category": "work",
+      "destination": "journey.html#journey-work",
+      "id": "memory-7",
+      "thumbnail": "assets/orbit/work-event.webp"
+    },
+    {
+      "path": "assets/photos/temple/temple-panorama.jpg",
+      "caption": "寺院与庭院 · 看建筑，也让脚步慢下来。",
+      "category": "quiet",
+      "destination": "notes.html#quiet",
+      "id": "memory-8",
+      "thumbnail": "assets/orbit/temple-panorama.webp"
+    },
+    {
+      "path": "assets/baseball.jpg",
+      "caption": "大学棒球队 · 球场上的一份热爱。",
+      "category": "campus",
+      "destination": "journey.html#journey-law",
+      "id": "memory-9",
+      "thumbnail": "assets/orbit/baseball.webp"
+    },
+    {
+      "path": "assets/photos/seaside/shoreline.jpg",
+      "caption": "沿着海边走 · 脚边是浪，眼前是海。",
+      "category": "travel",
+      "destination": "travel.html#seaside-stories",
+      "id": "memory-10",
+      "thumbnail": "assets/orbit/shoreline.webp"
+    },
+    {
+      "path": "assets/photos/travel/travel-fields.jpg",
+      "caption": "外出旅行 / 民族服装体验。",
+      "category": "travel",
+      "destination": "travel.html#travel-stories",
+      "id": "memory-11",
+      "thumbnail": "assets/orbit/travel-fields.webp"
+    },
+    {
+      "path": "assets/profile-formal.jpg",
+      "caption": "祖仁泽的正式肖像，白衬衫与蓝色领带",
+      "category": "about",
+      "destination": "about.html",
+      "id": "memory-12",
+      "thumbnail": "assets/orbit/profile-formal.webp"
+    },
+    {
+      "path": "assets/military.jpg",
+      "caption": "祖仁泽在军旅时期的记录",
+      "category": "military",
+      "destination": "journey.html#journey-military",
+      "id": "memory-13",
+      "thumbnail": "assets/orbit/military.webp"
+    },
+    {
+      "path": "assets/fire-rescue.jpg",
+      "caption": "2022 年重庆山火扑救现场记录",
+      "category": "military",
+      "destination": "journey.html#journey-military",
+      "id": "memory-14",
+      "thumbnail": "assets/orbit/fire-rescue.webp"
+    },
+    {
+      "path": "assets/work.jpg",
+      "caption": "祖仁泽的工作日常",
+      "category": "work",
+      "destination": "journey.html#journey-work",
+      "id": "memory-15",
+      "thumbnail": "assets/orbit/work.webp"
+    },
+    {
+      "path": "assets/temple.jpg",
+      "caption": "祖仁泽在寺院小住时的照片",
+      "category": "quiet",
+      "destination": "notes.html#quiet",
+      "id": "memory-16",
+      "thumbnail": "assets/orbit/temple.webp"
+    },
+    {
+      "path": "assets/seaside-moment.jpg",
+      "caption": "祖仁泽穿蓝色衬衫站在海边，天空呈柔和的晚霞色",
+      "category": "travel",
+      "destination": "travel.html#seaside-stories",
+      "id": "memory-17",
+      "thumbnail": "assets/orbit/seaside-moment.webp"
+    },
+    {
+      "path": "assets/running.jpg",
+      "caption": "祖仁泽穿着绿色上衣，在户外跑步",
+      "category": "sport",
+      "destination": "notes.html#moments",
+      "id": "memory-18",
+      "thumbnail": "assets/orbit/running.webp"
+    },
+    {
+      "path": "assets/sunset.jpg",
+      "caption": "祖仁泽站在海边，望向夕阳",
+      "category": "travel",
+      "destination": "travel.html#seaside-stories",
+      "id": "memory-19",
+      "thumbnail": "assets/orbit/sunset.webp"
+    },
+    {
+      "path": "assets/mountain-journey.jpg",
+      "caption": "祖仁泽在一次外出旅行中体验民族服装，身后有山林、村落与梯田",
+      "category": "travel",
+      "destination": "travel.html#travel-stories",
+      "id": "memory-20",
+      "thumbnail": "assets/orbit/mountain-journey.webp"
+    },
+    {
+      "path": "assets/photos/military/off-duty.jpg",
+      "caption": "戴着迷彩帽、穿黑色上衣的军旅日常留影",
+      "category": "military",
+      "destination": "journey.html#journey-military",
+      "id": "memory-21",
+      "thumbnail": "assets/orbit/off-duty.webp"
+    },
+    {
+      "path": "assets/photos/temple/temple-hall.jpg",
+      "caption": "寺院天王殿前的石阶、雕花梁柱、红灯笼与石象",
+      "category": "quiet",
+      "destination": "notes.html#quiet",
+      "id": "memory-22",
+      "thumbnail": "assets/orbit/temple-hall.webp"
+    },
+    {
+      "path": "assets/photos/temple/temple-garden.jpg",
+      "caption": "寺院庭院里的水池、雕像、花树与远处的山",
+      "category": "quiet",
+      "destination": "notes.html#quiet",
+      "id": "memory-23",
+      "thumbnail": "assets/orbit/temple-garden.webp"
+    },
+    {
+      "path": "assets/photos/temple/temple-details.jpg",
+      "caption": "华严堂前的雕花建筑与塔的细节",
+      "category": "quiet",
+      "destination": "notes.html#quiet",
+      "id": "memory-24",
+      "thumbnail": "assets/orbit/temple-details.webp"
+    },
+    {
+      "path": "assets/photos/travel/travel-balcony.jpg",
+      "caption": "外出旅行体验民族服装，坐在木质栏杆旁，身后是山林与村落",
+      "category": "travel",
+      "destination": "travel.html#travel-stories",
+      "id": "memory-25",
+      "thumbnail": "assets/orbit/travel-balcony.webp"
+    },
+    {
+      "path": "assets/photos/travel/travel-looking-out.jpg",
+      "caption": "外出旅行体验红色民族服装，侧身望向远处的山林",
+      "category": "travel",
+      "destination": "travel.html#travel-stories",
+      "id": "memory-26",
+      "thumbnail": "assets/orbit/travel-looking-out.webp"
+    },
+    {
+      "path": "assets/photos/travel/travel-landscape.jpg",
+      "caption": "外出旅行体验红色民族服装，抱臂站在梯田前",
+      "category": "travel",
+      "destination": "travel.html#travel-stories",
+      "id": "memory-27",
+      "thumbnail": "assets/orbit/travel-landscape.webp"
+    },
+    {
+      "path": "assets/photos/travel/travel-overlook.jpg",
+      "caption": "外出旅行体验黑色民族服装，身后是梯田和木质建筑群",
+      "category": "travel",
+      "destination": "travel.html#travel-stories",
+      "id": "memory-28",
+      "thumbnail": "assets/orbit/travel-overlook.webp"
+    },
+    {
+      "path": "assets/photos/travel/travel-viewpoint.jpg",
+      "caption": "外出旅行体验黑色民族服装，站在木质观景标牌旁",
+      "category": "travel",
+      "destination": "travel.html#travel-stories",
+      "id": "memory-29",
+      "thumbnail": "assets/orbit/travel-viewpoint.webp"
+    }
+  ],
+  "videos": [
+    {
+      "title": "我的自我介绍",
+      "path": "assets/video/ip-course-introduction.mp4",
+      "destination": "about.html#self-intro"
+    },
+    {
+      "title": "两年军旅总结回忆",
+      "path": "assets/photos/military/military-moments.mp4",
+      "destination": "journey.html#military-film"
+    }
+  ]
+}

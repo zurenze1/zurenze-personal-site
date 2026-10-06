@@ -14,7 +14,7 @@
   let backgroundWanted = read('ambient-enabled', 'true') === 'true';
   let waitingForGesture = false;
   let activeTrack = null;
-  const introduction = document.querySelector('#intro-video');
+  let introduction = null;
   let introductionPlaying = false;
   let pageLeaving = false;
   let audioContext, gain;
@@ -119,22 +119,23 @@
     introductionPlaying = false;
     introduction?.pause();
   }
-  introduction?.addEventListener('play', () => {
+  document.addEventListener('play', event => {
+    if (event.target.tagName !== 'VIDEO') return;
+    introduction = event.target;
     introductionPlaying = true;
     waitingForGesture = false;
+    document.querySelectorAll('video').forEach(video => { if(video !== introduction) video.pause(); });
     stopTracks();
     background.pause();
     renderBackground();
-  });
-  function introductionStopped() {
-    if (!introductionPlaying) return;
+  }, true);
+  function introductionStopped(event) {
+    if (event.target !== introduction || !introductionPlaying) return;
     introductionPlaying = false;
     renderBackground();
     startBackground();
   }
-  introduction?.addEventListener('pause', introductionStopped);
-  introduction?.addEventListener('ended', introductionStopped);
-  introduction?.addEventListener('error', introductionStopped);
+  ['pause','ended','error'].forEach(type => document.addEventListener(type, introductionStopped, true));
   toggle.addEventListener('click', () => {
     if (!background.paused && !activeTrack) {
       backgroundWanted = false;
