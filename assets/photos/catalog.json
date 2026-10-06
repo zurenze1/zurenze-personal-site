@@ -1,0 +1,205 @@
+{
+  "photo_count": 18,
+  "categories": [
+    {
+      "slug": "military",
+      "label": "军旅回忆",
+      "count": 3
+    },
+    {
+      "slug": "graduation",
+      "label": "毕业时刻",
+      "count": 1
+    },
+    {
+      "slug": "work",
+      "label": "工作日常",
+      "count": 1
+    },
+    {
+      "slug": "temple",
+      "label": "寺院与建筑",
+      "count": 4
+    },
+    {
+      "slug": "seaside",
+      "label": "海边片刻",
+      "count": 2
+    },
+    {
+      "slug": "travel",
+      "label": "外出旅行",
+      "count": 7
+    }
+  ],
+  "photos": [
+    {
+      "image_number": 1,
+      "category_slug": "military",
+      "title": "战友合影",
+      "caption": "军旅时期，与战友一起留下的合影。",
+      "web_path": "assets/photos/military/comrades.jpg",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "image_number": 2,
+      "category_slug": "military",
+      "title": "军旅日常",
+      "caption": "军旅时期，训练与任务之外的日常片刻。",
+      "web_path": "assets/photos/military/off-duty.jpg",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "image_number": 3,
+      "category_slug": "graduation",
+      "title": "毕业留影",
+      "caption": "学士服、花束，还有毕业时留下的一张照片。",
+      "web_path": "assets/photos/graduation/graduation.jpg",
+      "width": 1920,
+      "height": 1280
+    },
+    {
+      "image_number": 4,
+      "category_slug": "military",
+      "title": "军旅留影",
+      "caption": "穿着迷彩服，在装备旁留下这一刻。",
+      "web_path": "assets/photos/military/uniform.jpg",
+      "width": 1957,
+      "height": 1280
+    },
+    {
+      "image_number": 5,
+      "category_slug": "temple",
+      "title": "寺院全景",
+      "caption": "山林之间，层叠的屋顶与庭院。",
+      "web_path": "assets/photos/temple/temple-panorama.jpg",
+      "width": 2804,
+      "height": 1280
+    },
+    {
+      "image_number": 6,
+      "category_slug": "temple",
+      "title": "殿前一景",
+      "caption": "红灯笼、雕花梁柱与殿前的石阶。",
+      "web_path": "assets/photos/temple/temple-hall.jpg",
+      "width": 2804,
+      "height": 1280
+    },
+    {
+      "image_number": 7,
+      "category_slug": "temple",
+      "title": "庭院与水面",
+      "caption": "在庭院里，看看水面映出的风景。",
+      "web_path": "assets/photos/temple/temple-garden.jpg",
+      "width": 2804,
+      "height": 1280
+    },
+    {
+      "image_number": 8,
+      "category_slug": "temple",
+      "title": "建筑细节",
+      "caption": "靠近一点，看建筑与雕刻的细节。",
+      "web_path": "assets/photos/temple/temple-details.jpg",
+      "width": 3506,
+      "height": 1600
+    },
+    {
+      "image_number": 9,
+      "category_slug": "seaside",
+      "title": "海边留影",
+      "caption": "带着相机，在海边留下一个片刻。",
+      "web_path": "assets/photos/seaside/coastal-rocks.jpg",
+      "width": 1919,
+      "height": 1279
+    },
+    {
+      "image_number": 10,
+      "category_slug": "travel",
+      "title": "梯田之间",
+      "caption": "外出游玩时体验民族服装，身后是山林与梯田。",
+      "web_path": "assets/photos/travel/travel-fields.jpg",
+      "width": 1920,
+      "height": 1280
+    },
+    {
+      "image_number": 11,
+      "category_slug": "seaside",
+      "title": "沿着海边走",
+      "caption": "脚边是浪，眼前是海。",
+      "web_path": "assets/photos/seaside/shoreline.jpg",
+      "width": 5184,
+      "height": 3456
+    },
+    {
+      "image_number": 12,
+      "category_slug": "travel",
+      "title": "凭栏看山",
+      "caption": "一次旅行里的民族服装体验。",
+      "web_path": "assets/photos/travel/travel-balcony.jpg",
+      "width": 1920,
+      "height": 1280
+    },
+    {
+      "image_number": 13,
+      "category_slug": "travel",
+      "title": "红衣留影",
+      "caption": "换一身红色服装，留下旅途里的另一张照片。",
+      "web_path": "assets/photos/travel/travel-red.jpg",
+      "width": 1920,
+      "height": 1280
+    },
+    {
+      "image_number": 14,
+      "category_slug": "travel",
+      "title": "看向山间",
+      "caption": "外出游玩时，看看远处的山与村落。",
+      "web_path": "assets/photos/travel/travel-looking-out.jpg",
+      "width": 1920,
+      "height": 1280
+    },
+    {
+      "image_number": 15,
+      "category_slug": "travel",
+      "title": "山间留影",
+      "caption": "山林、梯田，与旅行中的自己。",
+      "web_path": "assets/photos/travel/travel-landscape.jpg",
+      "width": 1920,
+      "height": 1280
+    },
+    {
+      "image_number": 16,
+      "category_slug": "travel",
+      "title": "望向梯田",
+      "caption": "把旅行里的山间风景和自己一起留下。",
+      "web_path": "assets/photos/travel/travel-overlook.jpg",
+      "width": 1920,
+      "height": 1280
+    },
+    {
+      "image_number": 17,
+      "category_slug": "travel",
+      "title": "观景处的一刻",
+      "caption": "外出旅行，在观景处留下这一刻。",
+      "web_path": "assets/photos/travel/travel-viewpoint.jpg",
+      "width": 1920,
+      "height": 1280
+    },
+    {
+      "image_number": 18,
+      "category_slug": "work",
+      "title": "工作间隙",
+      "caption": "工作场景里，喝杯咖啡的片刻。",
+      "web_path": "assets/photos/work/coffee-break.jpg",
+      "width": 1279,
+      "height": 1706
+    }
+  ],
+  "video": {
+    "title": "两年军旅总结回忆",
+    "category_slug": "military",
+    "web_path": "assets/photos/military/military-moments.mp4",
+    "duration_seconds": 145.171
+  }
+}
