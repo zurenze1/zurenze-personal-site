@@ -41,3 +41,11 @@
 .portal-photo[data-scene=travel]{border-color:#deaf93;box-shadow:0 0 28px #c7724d44,0 14px 35px #0008}
 .portal-photo[data-scene=sea],.portal-photo[data-scene=sport]{border-color:#a5d9f6;box-shadow:0 0 28px #4cabdb44,0 14px 35px #0008}
 .portal-photo[data-scene=work]{border-color:#d4bf9c;box-shadow:0 0 24px #c29d5d44,0 14px 35px #0008}
+/* Radial velocity, layered passage rings and a single arrival bloom. */
+.portal-particles{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;mix-blend-mode:screen}
+.is-travelling .ring-four{animation-delay:1.8s}.is-travelling .ring-five{animation-delay:2.3s}.is-travelling .ring-six{animation-delay:2.8s}
+.portal-ring{border:2px solid #8ee0f766;box-shadow:0 0 32px #66befc33,inset 0 0 25px #92d5f52e;border-radius:32%;}
+.ring-two,.ring-five{border-color:#e5b88766;box-shadow:0 0 35px #daaf742e,inset 0 0 25px #dab98222;border-radius:50%}
+.is-travelling .portal-cosmos{animation:cosmosSurge 5.4s ease-in both}.is-travelling .portal-depth{animation:depthBank 5.4s ease-in-out both}
+@keyframes cosmosSurge{0%{transform:scale(1.06) rotate(-3deg)}70%{transform:scale(1.16) rotate(3deg)}100%{transform:scale(1.32) rotate(9deg)}}
+@keyframes depthBank{0%,100%{rotate:0deg}40%{rotate:-5deg}75%{rotate:6deg}}

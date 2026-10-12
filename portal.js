@@ -10,9 +10,21 @@
   stage.setAttribute('aria-label', '祖仁泽的个人网站，穿梭入场');
   const themes=['sport','sea','sea','military','work','military','travel','travel'];
   const photos = ['球场时光','海边时光','向海而行','两年军旅','工作之间','训练之外','旅途片刻','山野远行'];
-  stage.innerHTML = `<canvas class="portal-cosmos" aria-hidden="true"></canvas><div class="portal-vignette" aria-hidden="true"></div><div class="portal-top"><span>祖仁泽 <small>／ 个人世界</small></span><button type="button" class="portal-skip">跳过入场 ↗</button></div><div class="portal-depth" aria-hidden="true"><div class="portal-ring ring-one"></div><div class="portal-ring ring-two"></div><div class="portal-ring ring-three"></div>${photos.map((name,i)=>`<div class="portal-photo" data-scene="${themes[i]}"><img src="assets/portal/portrait-${i+1}.webp" alt=""><span>${name}</span></div>`).join('')}</div><div class="portal-arrival" aria-hidden="true"></div><div class="portal-bottom"><span class="portal-caption">每一程，都算数。</span><span class="portal-counter" aria-hidden="true">READY / 05</span><div class="portal-progress" aria-hidden="true"></div></div>`;
+  stage.innerHTML = `<canvas class="portal-cosmos" aria-hidden="true"></canvas><canvas class="portal-particles" aria-hidden="true"></canvas><div class="portal-vignette" aria-hidden="true"></div><div class="portal-top"><span>祖仁泽 <small>／ 个人世界</small></span><button type="button" class="portal-skip">跳过入场 ↗</button></div><div class="portal-depth" aria-hidden="true"><div class="portal-ring ring-one"></div><div class="portal-ring ring-two"></div><div class="portal-ring ring-three"></div><div class="portal-ring ring-four"></div><div class="portal-ring ring-five"></div><div class="portal-ring ring-six"></div>${photos.map((name,i)=>`<div class="portal-photo" data-scene="${themes[i]}"><img src="assets/portal/portrait-${i+1}.webp" alt=""><span>${name}</span></div>`).join('')}</div><div class="portal-arrival" aria-hidden="true"></div><div class="portal-bottom"><span class="portal-caption">每一程，都算数。</span><span class="portal-counter" aria-hidden="true">READY / 05</span><div class="portal-progress" aria-hidden="true"></div></div>`;
   document.body.append(stage);
   const canvas = stage.querySelector('canvas');
+  const particles=stage.querySelector('.portal-particles'),fx=particles.getContext('2d');
+  const rays=Array.from({length:100},(_,i)=>({angle:i*2.39996,offset:(i*.618034)%1,length:.05+(i%7)*.012}));
+  function drawParticles(t){
+    if(!fx)return;const w=innerWidth,h=innerHeight,cx=w/2,cy=h/2,max=Math.hypot(w,h)*.65;
+    fx.clearRect(0,0,w,h);fx.globalCompositeOperation='lighter';
+    const boost=Math.min(1,t/2),end=Math.min(1,Math.max(0,(5.3-t)/.8));
+    rays.forEach((ray,i)=>{const p=(ray.offset+t*(.24+boost*.42))%1,r=p*p*max,angle=ray.angle+t*.13;
+      const tail=Math.max(0,r-ray.length*max*(.3+boost)*p);fx.beginPath();fx.moveTo(cx+Math.cos(angle)*tail,cy+Math.sin(angle)*tail);fx.lineTo(cx+Math.cos(angle)*r,cy+Math.sin(angle)*r);
+      fx.strokeStyle=i%4===0?'rgba(237,179,113,'+(p*.65*end)+')':'rgba(132,214,255,'+(p*.75*end)+')';fx.lineWidth=.5+p*1.5;fx.stroke();});
+    [.35,2.25,4.25].forEach(start=>{const p=(t-start)/1.05;if(p<=0||p>=1)return;fx.beginPath();fx.ellipse(cx,cy,Math.max(1,p*p*max),Math.max(1,p*p*max*.68),t*.17,0,Math.PI*2);fx.strokeStyle='rgba(166,225,255,'+((1-p)*.6)+')';fx.lineWidth=2+(1-p)*3;fx.shadowBlur=20;fx.shadowColor='#62b7f6';fx.stroke();fx.shadowBlur=0;});
+    fx.globalCompositeOperation='source-over';
+  }
   const gl = canvas.getContext('webgl', {alpha:false, antialias:false, powerPreference:'low-power'});
   let program, uniform, frame = 0, start = 0, timer, returnFocus, attempt = 0;
   const cards = [...stage.querySelectorAll('.portal-photo')];
@@ -30,8 +42,8 @@
         uv-=vec2(sin(clock*.5)*.04,cos(clock*.45)*.025);
         float r=length(uv), angle=atan(uv.y,uv.x);
         float depth=.42/max(r,.035);
-        float travel=clock*.28+accelerate*3.1;
-        float twist=angle+depth*.32+clock*.26+accelerate*.9;
+        float travel=clock*.4+accelerate*4.4;
+        float twist=angle+depth*.32+clock*.32+accelerate*1.4;
         vec2 cylinder=vec2(cos(twist),sin(twist))*2.2;
         float n=cloud(cylinder+vec2(depth-travel,depth*.53-travel*.6));
         float detail=cloud(cylinder*2.5+vec2(depth*2.-travel*2.,-travel));
@@ -42,7 +54,7 @@
         col+=vec3(.55,.31,.09)*gold*(.35+detail);
         col+=vec3(.15,.29,.4)*pow(max(0.,detail),3.);
         float rings=pow(max(0.,sin(depth*8.-travel*8.+fold*.15)),65.);
-        col+=vec3(.2,.43,.54)*rings*.15*smoothstep(.04,.2,r);
+        col+=vec3(.2,.43,.54)*rings*.42*smoothstep(.04,.2,r);
         float spokes=pow(max(0.,sin(angle*82.+sin(angle*9.)*6.)),95.);
         float streak=pow(max(0.,sin(depth*1.5-travel*5.+angle*7.)),18.);
         col+=vec3(.4,.67,.78)*spokes*streak*accelerate*1.15;
@@ -55,16 +67,17 @@
     if(vs&&fs){program=gl.createProgram();gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))program=null;}
     if(program){gl.useProgram(program);const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);const p=gl.getAttribLocation(program,'p');gl.enableVertexAttribArray(p);gl.vertexAttribPointer(p,2,gl.FLOAT,false,0,0);uniform={size:gl.getUniformLocation(program,'size'),clock:gl.getUniformLocation(program,'clock')};}
   }
-  function resize(){if(!program)return;const dpr=Math.min(devicePixelRatio||1,1.25);canvas.width=innerWidth*dpr;canvas.height=innerHeight*dpr;gl.viewport(0,0,canvas.width,canvas.height);}
+  function resize(){const scale=Math.min(devicePixelRatio||1,1.25);particles.width=innerWidth*scale;particles.height=innerHeight*scale;fx?.setTransform(scale,0,0,scale,0,0);if(!program)return;const dpr=Math.min(devicePixelRatio||1,1.25);canvas.width=innerWidth*dpr;canvas.height=innerHeight*dpr;gl.viewport(0,0,canvas.width,canvas.height);}
   function draw(now){
     if(!stage.open)return;
     if(now-lastFrame<30){frame=requestAnimationFrame(draw);return;}lastFrame=now;
     const elapsed=travelling?(now-start)/1000:0;
     if(program){gl.uniform2f(uniform.size,canvas.width,canvas.height);gl.uniform1f(uniform.clock,elapsed);gl.drawArrays(gl.TRIANGLES,0,6);}
+    drawParticles(elapsed);
     const mobile=innerWidth<650, rx=Math.min(innerWidth*(mobile?.37:.34),530), ry=Math.min(innerHeight*(mobile?.32:.30),290);
     cards.forEach((card,i)=>{
       const p=Math.min(1,Math.max(0,(elapsed-.65-i*.075)/3.7));
-      const angle=i*Math.PI/4-Math.PI/2+p*p*5.5;
+      const angle=i*Math.PI/4-Math.PI/2+p*p*7.8;
       const radius=Math.pow(1-p,1.25), x=Math.cos(angle)*rx*radius, y=Math.sin(angle)*ry*radius;
       card.style.transform=`translate(-50%,-50%) translate(${x}px,${y}px) rotate(${Math.sin(angle)*9+p*35}deg) scale(${1-p*.94})`;
       card.style.opacity=String(p>.91?(1-p)/.09:1);

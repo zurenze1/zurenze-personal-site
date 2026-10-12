@@ -32,18 +32,18 @@
   });
   const motion=()=>root.dataset.motion==='on'&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
   function draw(){
-    const radius=Math.min(size,stage.clientHeight)*.37;
+    const radius=Math.min(size,stage.clientHeight)*(.37+Math.sin(yaw*1.8)*.013);
     cards.forEach((card,i)=>{
       const [x,y,z]=points[i];const rx=x*Math.cos(yaw)+z*Math.sin(yaw),rz=z*Math.cos(yaw)-x*Math.sin(yaw);
       const ry=y*Math.cos(pitch)-rz*Math.sin(pitch),depth=y*Math.sin(pitch)+rz*Math.cos(pitch);
       const scale=.56+(depth+1)*.27;
-      card.style.transform=`translate(-50%,-50%) translate3d(${(rx*radius).toFixed(2)}px,${(ry*radius).toFixed(2)}px,0) scale(${scale.toFixed(3)})`;
+      card.style.transform=`translate(-50%,-50%) translate3d(${(rx*radius).toFixed(2)}px,${(ry*radius).toFixed(2)}px,0) rotate(${(Math.sin(yaw*1.4+i)*4).toFixed(2)}deg) scale(${scale.toFixed(3)})`;
       card.style.opacity=(depth>=0?1:Math.max(.06,1+depth*2.8)).toFixed(2);card.style.zIndex=String(Math.round((depth+1)*100));
       card.style.filter=`brightness(${depth>=0?1:.72})`;
     });
   }
   function active(){return motion()&&!root.classList.contains('is-arriving')&&!root.classList.contains('arrival-pending')&&!paused&&!hover&&!focused&&!drag&&visible&&!document.hidden&&!document.querySelector('dialog[open]');}
-  function tick(time){frame=0;const dt=Math.min(50,time-(last||time));last=time;if(active()){yaw+=dt*.00012;draw();frame=requestAnimationFrame(tick);}}
+  function tick(time){frame=0;const dt=Math.min(50,time-(last||time));last=time;if(active()){yaw+=dt*.00021;draw();frame=requestAnimationFrame(tick);}}
   function resume(){last=0;if(active()&&!frame)frame=requestAnimationFrame(tick);}
   function sync(){toggle.disabled=!motion();toggle.textContent=!motion()?'动态已关闭':paused?'继续旋转 ↻':'暂停旋转 Ⅱ';toggle.setAttribute('aria-pressed',String(paused));draw();resume();}
   new ResizeObserver(entries=>{size=entries[0].contentRect.width;draw();}).observe(stage);

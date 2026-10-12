@@ -21,7 +21,8 @@
   let introductionPlaying = false;
   let pageLeaving = false;
   let audioContext, gain, envelope;
-  let fadeFrame=0, fadeOrigin=0, portalAudioActive=false;
+  let fadeFrame=0, fadeOrigin=0, portalAudioActive=false, entryStopTimer=0;
+  let autoStopped=read("ambient-entry-stopped-v30","false")==="true";
   let musicMix=Number(read('ambient-mix-v28','1'));
   if(!Number.isFinite(musicMix))musicMix=1;
   let entrySeeking = false;
@@ -54,13 +55,21 @@
     else background.volume=Math.min(1,Number(volume.value)/100*musicMix);
     background.dataset.mix=musicMix.toFixed(3);save('ambient-mix-v28',musicMix);
   }
+  function clearEntryLimit(){clearTimeout(entryStopTimer);save('ambient-entry-until-v30',0);autoStopped=false;save('ambient-entry-stopped-v30',false);cancelAnimationFrame(fadeFrame);musicMix=1;applyMix();background.dataset.soundStage='manual';}
+  function stopEntryMusic(){
+    clearTimeout(entryStopTimer);cancelAnimationFrame(fadeFrame);entryRequest++;entryPending=false;
+    backgroundWanted=false;waitingForGesture=false;autoStopped=true;save('ambient-entry-stopped-v30',true);save('ambient-entry-until-v30',0);save('ambient-enabled-v27',false);
+    stopTunnelFx();background.pause();musicMix=1;applyMix();background.dataset.soundStage='finished';renderBackground();
+  }
+  function armEntryLimit(deadline){clearTimeout(entryStopTimer);entryStopTimer=setTimeout(stopEntryMusic,Math.max(0,deadline-Date.now()));}
   function entranceEnvelope(){
-    cancelAnimationFrame(fadeFrame);fadeOrigin=performance.now();
+    cancelAnimationFrame(fadeFrame);fadeOrigin=performance.now();autoStopped=false;save('ambient-entry-stopped-v30',false);
+    const deadline=Date.now()+12000;save('ambient-entry-until-v30',deadline);armEntryLimit(deadline);
     function step(now){
       const t=(now-fadeOrigin)/1000,p=Math.max(0,Math.min(1,(t-3)/7));
-      musicMix=1.6*Math.pow(.55/1.6,p*p*(3-2*p));applyMix();
-      background.dataset.soundStage=t<3?'climax':t<10?'fading':'ambient';
-      if(t<10)fadeFrame=requestAnimationFrame(step);
+      musicMix=t<10?1.6*Math.pow(.55/1.6,p*p*(3-2*p)):.55*Math.max(0,1-(t-10)/2);applyMix();
+      background.dataset.soundStage=t<3?'climax':t<10?'fading':'ending';
+      if(t<12)fadeFrame=requestAnimationFrame(step);
     }
     step(fadeOrigin);
   }
@@ -114,7 +123,7 @@
     if (waitingForGesture && backgroundWanted && !activeTrack && ['Enter', ' '].includes(event.key) && !event.target.closest('.sound-dock, .music-section, .intro-video-section, .portal-entry')) startBackground();
   });
   window.addEventListener('pagehide', () => {
-    pageLeaving = true;
+    pageLeaving = true;clearTimeout(entryStopTimer);
     closePlatform();
     save('ambient-position-' + selection, background.currentTime);
     pauseIntroduction();
@@ -179,6 +188,7 @@
   }
   ['pause','ended','error'].forEach(type => document.addEventListener(type, introductionStopped, true));
   toggle.addEventListener('click', () => {
+    clearEntryLimit();
     if (selection === 'qingkong') { if(platformFrame) closePlatform(); else openQingkong(); return; }
     if (!background.paused && !activeTrack) {
       stopTunnelFx();
@@ -249,7 +259,7 @@
   picker.className = 'sound-picker';
   picker.hidden = true;
   picker.setAttribute('aria-label', '选择音乐');
-  picker.innerHTML = `<div class="sound-picker-heading"><strong>我的听歌时间</strong><button type="button" class="sound-picker-close" aria-label="关闭选歌并停止青空">×</button></div><div class="sound-choices"><button type="button" data-background="refreshing"><b>晴朗钢琴</b><small>PeriTune · 默认入场音乐</small></button><button type="button" data-background="qingkong"><b>青空</b><small>Piano 毛 · 官方播放</small></button><button type="button" data-background="canon"><b>卡农</b><small>站内音频 · 循环播放</small></button></div><div class="qingkong-player"></div><p class="sound-source-note">入场选曲：<a href="https://peritune.com/blog/2016/07/13/piano_refreshing/" target="_blank" rel="noopener noreferrer">Piano_Refreshing · PeriTune ↗</a><br>站内循环，无广告。<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a> · 已调整响度。<br>《青空》另用官方播放器收听。</p><a class="qingkong-original" href="https://www.douyin.com/video/7399206310245420325" target="_blank" rel="noopener noreferrer">去原作品收听 ↗</a>`;
+  picker.innerHTML = `<div class="sound-picker-heading"><strong>我的听歌时间</strong><button type="button" class="sound-picker-close" aria-label="关闭选歌并停止青空">×</button></div><div class="sound-choices"><button type="button" data-background="refreshing"><b>晴朗钢琴</b><small>PeriTune · 默认入场音乐</small></button><button type="button" data-background="qingkong"><b>青空</b><small>Piano 毛 · 官方播放</small></button><button type="button" data-background="canon"><b>卡农</b><small>站内音频 · 循环播放</small></button></div><div class="qingkong-player"></div><p class="sound-source-note">入场选曲：<a href="https://peritune.com/blog/2016/07/13/piano_refreshing/" target="_blank" rel="noopener noreferrer">Piano_Refreshing · PeriTune ↗</a><br>入场播放 12 秒；手动开启可循环，无广告。<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a> · 已调整响度。<br>《青空》另用官方播放器收听。</p><a class="qingkong-original" href="https://www.douyin.com/video/7399206310245420325" target="_blank" rel="noopener noreferrer">去原作品收听 ↗</a>`;
   dock.append(picker);
   const frameHolder = picker.querySelector('.qingkong-player');
   new ResizeObserver(() => frameHolder.style.setProperty('--player-scale', String(frameHolder.clientWidth / 360))).observe(frameHolder);
@@ -273,6 +283,7 @@
     renderBackground();
   }
   function openQingkong(){
+    clearEntryLimit();
     closePlatform();stopTracks();pauseIntroduction();background.pause();waitingForGesture=false;
     selectTrack('qingkong');showPicker();
     platformFrame=document.createElement('iframe');
@@ -286,6 +297,7 @@
   picker.querySelector('.sound-picker-close').addEventListener('click',()=>{hidePicker();chooser.focus();});
   picker.addEventListener('keydown',event=>{if(event.key==='Escape'){hidePicker();chooser.focus();}});
   picker.querySelectorAll('[data-background]').forEach(button=>button.addEventListener('click',()=>{
+    clearEntryLimit();
     if(button.dataset.background==='qingkong'){openQingkong();return;}
     closePlatform();stopTracks();pauseIntroduction();selectTrack(button.dataset.background);backgroundWanted=true;save('ambient-enabled-v27',true);startBackground();
   }));
@@ -298,8 +310,8 @@
     stopTunnelFx();if(!audioContext||audioContext.state!=='running')return;
     if(elapsed>1.2)return;
     const ctx=audioContext,t=ctx.currentTime,level=Number(volume.value)/100;
-    const bus=ctx.createGain();bus.gain.value=level*.95;
-    const limiter=ctx.createDynamicsCompressor();limiter.threshold.value=-9;limiter.knee.value=12;limiter.ratio.value=8;limiter.attack.value=.003;limiter.release.value=.2;bus.connect(limiter);limiter.connect(ctx.destination);fxNodes.push(limiter);
+    const bus=ctx.createGain();bus.gain.value=level*1.4;
+    const limiter=ctx.createDynamicsCompressor();limiter.threshold.value=-7;limiter.knee.value=12;limiter.ratio.value=8;limiter.attack.value=.003;limiter.release.value=.2;bus.connect(limiter);limiter.connect(ctx.destination);fxNodes.push(limiter);
     const noise=ctx.createBuffer(2,Math.ceil(ctx.sampleRate*5.4),ctx.sampleRate);
     for(let c=0;c<2;c++){const data=noise.getChannelData(c);let last=0;for(let i=0;i<data.length;i++){last=(last+(Math.random()*2-1)*.08)/1.02;data[i]=last*2.8;}}
     const source=ctx.createBufferSource();source.buffer=noise;
@@ -308,7 +320,7 @@
     const pan=ctx.createStereoPanner?.();source.connect(filter);filter.connect(swell);if(pan){swell.connect(pan);pan.connect(bus);pan.pan.setValueAtTime(-.6,t);pan.pan.linearRampToValueAtTime(.6,t+2.3);pan.pan.linearRampToValueAtTime(0,t+4.4);}else swell.connect(bus);source.start(t);source.stop(t+5.4);
     fxNodes.push(source,bus,filter,swell);if(pan)fxNodes.push(pan);
     // The arrival impact is a synthesized falling low tone, never a sampled film effect.
-    [0,4.35].forEach((offset,index)=>{const osc=ctx.createOscillator(),g=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(index?110:80,t+offset);osc.frequency.exponentialRampToValueAtTime(38,t+offset+.65);g.gain.setValueAtTime(0,t+offset);g.gain.linearRampToValueAtTime(index ? .85 : .65,t+offset+.015);g.gain.exponentialRampToValueAtTime(.001,t+offset+.9);osc.connect(g);g.connect(bus);osc.start(t+offset);osc.stop(t+offset+1);fxNodes.push(osc,g);});
+    [0,4.35].forEach((offset,index)=>{const osc=ctx.createOscillator(),g=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(index?110:80,t+offset);osc.frequency.exponentialRampToValueAtTime(38,t+offset+.65);g.gain.setValueAtTime(0,t+offset);g.gain.linearRampToValueAtTime(index ? 1.05 : .85,t+offset+.015);g.gain.exponentialRampToValueAtTime(.001,t+offset+.9);osc.connect(g);g.connect(bus);osc.start(t+offset);osc.stop(t+offset+1);fxNodes.push(osc,g);});
     [0.03,4.28].forEach((offset,index)=>{
       const burst=ctx.createBufferSource();burst.buffer=noise;
       const low=ctx.createBiquadFilter();low.type='lowpass';low.frequency.setValueAtTime(6500,t+offset);low.frequency.exponentialRampToValueAtTime(160,t+offset+.85);
@@ -318,7 +330,7 @@
     setTimeout(()=>{if(fxNodes.includes(bus))stopTunnelFx();},5600);
   }
   window.ZRZAudio={
-    canAutoStart:()=>backgroundWanted,
+    canAutoStart:()=>backgroundWanted||autoStopped,
     startEntry:async()=>{
       const request=++entryRequest;entryPending=true;portalAudioActive=true;entranceEnvelope();const audioStart=performance.now();
       closePlatform();stopTracks();pauseIntroduction();entrySeeking=true;selectTrack('refreshing');backgroundWanted=true;save('ambient-enabled-v27',true);
@@ -331,6 +343,8 @@
     silence:()=>{entryRequest++;entryPending=false;stopTunnelFx();backgroundWanted=false;waitingForGesture=false;save('ambient-enabled-v27',false);background.pause();renderBackground();}
   };
   selectTrack(['canon','qingkong','refreshing'].includes(selection)?selection:'refreshing');
+  const entryDeadline=Number(read('ambient-entry-until-v30','0'));
+  if(entryDeadline>0){if(entryDeadline<=Date.now())stopEntryMusic();else armEntryLimit(entryDeadline);}
   renderBackground();
   if(!new URLSearchParams(location.search).has('preview') && (!document.body.classList.contains('index') || location.hash || matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.motion==='off')) startBackground();
 })();
