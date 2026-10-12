@@ -116,3 +116,15 @@ a.text-link:hover,a.inline-link:hover,.origin-links a:hover{text-shadow:0 0 20px
 .index .signature-book-caption b{border-bottom:0}
 .about-entry .section-label span{color:#b8ceda}
 @media(max-width:760px){.about-entry::before{background:linear-gradient(180deg,#08152620 0%,#0815269c 46%,#081526b5 100%)}}
+/* v25: the setting stays alive during entry and throughout page browsing. */
+body{isolation:isolate}
+.page-atmosphere{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:var(--paper)}
+.page-atmosphere .living-water{z-index:0;width:100%;height:100%}
+.page-atmosphere::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#ffffff22,transparent 60%);pointer-events:none}
+.index .page-atmosphere::after{background:linear-gradient(90deg,#080f1ec7, #080f1e45 72%),linear-gradient(180deg,#080f1e88,transparent 60%)}
+.index .home-hero::before{background:none}
+.index .hero-words,.index .hero-summary,.index .orbit-intro{ text-shadow:0 2px 20px #050e18aa }
+.index .hero-footnote{background:#080f1e99;border-radius:8px;padding-inline:12px}
+.index .chapter-heading,.index .orbit-intro{position:relative}
+.page-atmosphere canvas[hidden]{display:none!important}
+@media(max-width:760px){.index .page-atmosphere::after{background:linear-gradient(180deg,#080f1e55,#080f1e9c 45%,#080f1ec7)}.index .hero-footnote{padding-inline:8px}}

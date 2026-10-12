@@ -1,7 +1,7 @@
 /* A live ocean surface, drawn locally. No stock video, tracking or network calls. */
 (() => {
-  const canvas = document.querySelector('.living-water');
-  if (!canvas) return;
+  document.querySelectorAll('.living-water').forEach(createWater);
+  function createWater(canvas) {
   const root = document.documentElement;
   const gl = canvas.getContext('webgl', {alpha:false, antialias:false, powerPreference:'low-power'});
   if (!gl) { canvas.hidden = true; return; }
@@ -9,6 +9,8 @@
   const fragment = `precision mediump float;
     uniform vec2 resolution;
     uniform float time;
+    uniform float soft;
+    uniform vec3 paper;
     float wave(vec2 p){
       return sin(p.x*.95+p.y*1.2+time*.65)*.18
         +sin(p.x*1.8-p.y*.75-time*.82)*.12
@@ -38,6 +40,8 @@
         col=mix(col,vec3(.15,.25,.33),smoothstep(15.,130.,-p.z));
       }
       col*=1.-.20*length((uv-.5)*vec2(.7,1.));
+      float luminance=dot(col,vec3(.2126,.7152,.0722));
+      col=mix(col,paper*(.88+.14*smoothstep(.035,.32,luminance)),soft);
       gl_FragColor=vec4(col,1.);
     }`;
   function shader(type, source) {
@@ -53,6 +57,10 @@
   const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
   const position=gl.getAttribLocation(program,'position');gl.enableVertexAttribArray(position);gl.vertexAttribPointer(position,2,gl.FLOAT,false,0,0);
   const clock=gl.getUniformLocation(program,'time'),resolution=gl.getUniformLocation(program,'resolution');
+  const tones={paper:[.96,.94,.90],sage:[.92,.95,.89],blue:[.91,.95,.97]};
+  const paper=tones[canvas.dataset.tone];
+  gl.uniform1f(gl.getUniformLocation(program,'soft'),paper?1:0);
+  gl.uniform3fv(gl.getUniformLocation(program,'paper'),paper||[1,1,1]);
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   let visible=true,frame=0,last=0,elapsed=0,lost=false;
   const active=()=>!lost&&visible&&!document.hidden&&!reduced.matches&&root.dataset.motion==='on';
@@ -79,4 +87,5 @@
   window.addEventListener('pagehide',()=>{cancelAnimationFrame(frame);frame=0;});
   window.addEventListener('pageshow',sync);
   resize();sync();
+  }
 })();
