@@ -1,30 +1,29 @@
-/* Physical books on a living surface; light orbits behind authentic photos. */
+/* One continuous current drives the surface, buoyancy and surrounding islands. */
 (() => {
  const root=document.documentElement,reduced=matchMedia('(prefers-reduced-motion:reduce)');
- document.addEventListener('visibilitychange',()=>root.classList.toggle('effects-hidden',document.hidden));
- const library=document.querySelector('#my-books');
+ const current=window.ZRZCurrent={time:0,sample(x,y,t){const a=x*.85+y*.55-t*.65,b=x*1.55-y*.9-t*.42;return{h:Math.sin(a)*.13+Math.sin(b)*.055,dx:Math.cos(a)*.1105+Math.cos(b)*.08525,dy:Math.cos(a)*.0715-Math.cos(b)*.0495};}};
+ const items=[],library=document.querySelector('#my-books');let frame=0,last=0;
+ function water(parent,cls){const canvas=document.createElement('canvas');canvas.className='living-water '+cls;canvas.dataset.waterScene='7';canvas.dataset.tone='midnight';canvas.setAttribute('aria-hidden','true');parent.prepend(canvas);return canvas;}
  if(library){
-  const water=document.createElement('canvas');water.className='living-water reading-water';water.dataset.waterScene='3';water.dataset.tone='midnight';water.setAttribute('aria-hidden','true');library.prepend(water);
+  water(library,'reading-water');library.classList.add('floating-library');
   library.querySelectorAll('.signature-book').forEach((book,i)=>{
-   const cover=book.querySelector('.signature-cover'),float=document.createElement('div');float.className='book-float';float.style.setProperty('--book-angle',[-12,8,-7,13,-9][i]+'deg');float.style.setProperty('--book-delay',(-i*1.37)+'s');
-   cover.before(float);float.append(cover);const ripple=document.createElement('span');ripple.className='book-ripple';ripple.setAttribute('aria-hidden','true');float.prepend(ripple);
-  });library.classList.add('floating-library');
-  new IntersectionObserver(([e])=>library.classList.toggle('is-reading-visible',e.isIntersecting),{threshold:.05}).observe(library);
+   const cover=book.querySelector('.signature-cover'),float=document.createElement('div');float.className='book-float';float.style.setProperty('--book-angle',[-9,6,-5,9,-7][i]+'deg');cover.before(float);float.append(cover);
+   const reflection=cover.cloneNode(true);reflection.className+=' book-reflection';reflection.setAttribute('aria-hidden','true');float.prepend(reflection);
+   const ripple=document.createElement('span');ripple.className='book-ripple';ripple.setAttribute('aria-hidden','true');float.prepend(ripple);
+   items.push({el:float,host:book,type:'book',section:library,i,visible:false,x:i,y:0});
+  });
  }
- const stage=document.querySelector('.photo-sphere');if(!stage)return;
- const canvas=document.createElement('canvas');canvas.className='orbit-particles';canvas.setAttribute('aria-hidden','true');stage.before(canvas);const ctx=canvas.getContext('2d');if(!ctx)return;
- const toggle=document.querySelector('.sphere-toggle');let visible=false,frame=0,last=0,time=0,width=0,height=0;
- function allowed(){return visible&&!document.hidden&&root.dataset.motion==='on'&&!reduced.matches&&toggle?.getAttribute('aria-pressed')!=='true'&&!stage.matches(':hover,:focus-within')&&!document.querySelector('dialog[open]');}
- function draw(){ctx.clearRect(0,0,width,height);const cx=width/2,cy=height/2,r=Math.min(width,height)*.45;ctx.globalCompositeOperation='lighter';
-  const glow=ctx.createRadialGradient(cx,cy,0,cx,cy,r);glow.addColorStop(0,'#3baadf16');glow.addColorStop(.5,'#4585c611');glow.addColorStop(1,'#09121c00');ctx.fillStyle=glow;ctx.fillRect(0,0,width,height);
-  for(let j=0;j<3;j++){ctx.save();ctx.translate(cx,cy);ctx.rotate([-.4,.7,1.5][j]+Math.sin(time*.16)*.08);ctx.scale(1,[.34,.6,.82][j]);ctx.beginPath();ctx.arc(0,0,r*(1+j*.07),0,Math.PI*2);ctx.strokeStyle=['#91dbef45','#deb98938','#8caeee30'][j];ctx.lineWidth=1.5;ctx.stroke();
-   for(let i=0;i<30;i++){const angle=i/30*Math.PI*2+time*(.23+j*.13);const rad=r*(1+j*.07);const alpha=.2+.65*(Math.sin(i*2.3)+1)/2;ctx.beginPath();ctx.arc(0,0,rad,angle-.17,angle);ctx.strokeStyle=j===1?`rgba(232,181,119,${alpha})`:`rgba(113,207,247,${alpha})`;ctx.lineWidth=i%7===0?3:1.2;ctx.shadowBlur=17;ctx.shadowColor='#6ecaff';ctx.stroke();}const head=time*(.5+j*.18)+j*2;ctx.beginPath();ctx.arc(Math.cos(head)*r*(1+j*.07),Math.sin(head)*r*(1+j*.07),3.2,0,Math.PI*2);ctx.fillStyle=j===1?'#ffe0a9':'#b7efff';ctx.shadowBlur=25;ctx.fill();ctx.restore();}
-  ctx.shadowBlur=0;ctx.globalCompositeOperation='source-over';
+ const field=document.querySelector('.photo-sphere');if(field){water(field,'memory-water');document.querySelector('.orbit-section')?.classList.add('water-memories');}
+ document.querySelectorAll('.home-films .film-card,.story-destinations>a,.home-listening,.culture-editorial,.home-life,.douyin-showcase,.home-contact').forEach((el,i)=>{el.classList.add('float-island');items.push({el,host:el,type:'island',section:el.parentElement,i,visible:false,x:i,y:i*.4});});
+ function layout(){for(const item of items){const r=item.el.getBoundingClientRect(),s=item.section.getBoundingClientRect();if(item.type==='book'){item.x=((r.left-s.left+r.width/2)/s.height-s.width/s.height/2)*9;item.y=(.5-(r.top-s.top+r.height*.55)/s.height)*9;}}}
+ function apply(item){if(!item.visible)return;const el=item.el;if(item.host.matches(':hover,:focus-within'))return;const p=current.sample(item.x,item.y,current.time);
+  if(item.type==='book'){el.style.setProperty('--heave',(p.h*22).toFixed(2)+'px');el.style.setProperty('--water-pitch',(p.dy*14).toFixed(2)+'deg');el.style.setProperty('--water-roll',(p.dx*12).toFixed(2)+'deg');el.style.setProperty('--drift',(Math.sin(current.time*.32+item.x)*4).toFixed(2)+'px');}
+  else{el.style.setProperty('--island-y',(p.h*14).toFixed(2)+'px');el.style.setProperty('--island-roll',(p.dx*.6).toFixed(3)+'deg');}
  }
- function tick(now){frame=0;if(!allowed())return;time+=Math.min(.05,(now-(last||now))/1000);last=now;draw();frame=requestAnimationFrame(tick);}
- function sync(){cancelAnimationFrame(frame);frame=0;last=0;if(allowed())frame=requestAnimationFrame(tick);else draw();}
- new ResizeObserver(()=>{width=stage.clientWidth;height=stage.clientHeight;const dpr=Math.min(devicePixelRatio||1,1.25);canvas.width=width*dpr;canvas.height=height*dpr;canvas.style.height=height+'px';ctx.setTransform(dpr,0,0,dpr,0,0);draw();sync();}).observe(stage);
- new IntersectionObserver(([e])=>{visible=e.isIntersecting;sync();}).observe(stage);
- new MutationObserver(sync).observe(root,{attributes:true,attributeFilter:['data-motion']});new MutationObserver(sync).observe(toggle,{attributes:true,attributeFilter:['aria-pressed']});new MutationObserver(sync).observe(document.body,{subtree:true,attributes:true,attributeFilter:['open']});
- ['pointerenter','pointerleave','focusin','focusout'].forEach(event=>stage.addEventListener(event,()=>requestAnimationFrame(sync)));document.addEventListener('visibilitychange',sync);reduced.addEventListener('change',sync);
+ function allowed(){return !document.hidden&&root.dataset.motion==='on'&&!reduced.matches&&!root.classList.contains('portal-active')&&!document.querySelector('dialog[open]');}
+ function tick(now){frame=0;if(!allowed())return;if(now-last>=32){current.time+=Math.min(.06,(now-(last||now))/1000);last=now;items.forEach(apply);}frame=requestAnimationFrame(tick);}
+ function sync(){cancelAnimationFrame(frame);frame=0;last=0;if(allowed())frame=requestAnimationFrame(tick);}
+ const observer=new IntersectionObserver(entries=>{for(const entry of entries){for(const item of items)if(item.el===entry.target)item.visible=entry.isIntersecting;}sync();},{rootMargin:'50px'});items.forEach(i=>observer.observe(i.el));
+ new ResizeObserver(layout).observe(document.body);new MutationObserver(sync).observe(root,{attributes:true,attributeFilter:['data-motion','class']});new MutationObserver(sync).observe(document.body,{subtree:true,attributes:true,attributeFilter:['open']});
+ document.addEventListener('visibilitychange',sync);reduced.addEventListener('change',sync);window.addEventListener('pagehide',()=>cancelAnimationFrame(frame));window.addEventListener('pageshow',sync);layout();sync();
 })();

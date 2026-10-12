@@ -67,7 +67,7 @@
     const deadline=Date.now()+12000;save('ambient-entry-until-v30',deadline);armEntryLimit(deadline);
     function step(now){
       const t=(now-fadeOrigin)/1000,p=Math.max(0,Math.min(1,(t-3)/7));
-      musicMix=t<10?1.6*Math.pow(.55/1.6,p*p*(3-2*p)):.55*Math.max(0,1-(t-10)/2);applyMix();
+      musicMix=(t<10?1.25*Math.pow(.55/1.25,p*p*(3-2*p)):.55*Math.max(0,1-(t-10)/2))*Math.min(1,.12+t/1.15);applyMix();
       background.dataset.soundStage=t<3?'climax':t<10?'fading':'ending';
       if(t<12)fadeFrame=requestAnimationFrame(step);
     }
@@ -315,23 +315,18 @@
     stopTunnelFx();if(!audioContext||audioContext.state!=='running')return;
     if(elapsed>1.2)return;
     const ctx=audioContext,t=ctx.currentTime,level=Number(volume.value)/100;
-    const bus=ctx.createGain();bus.gain.value=level*1.4;
+    const bus=ctx.createGain();bus.gain.value=level*.72;
     const limiter=ctx.createDynamicsCompressor();limiter.threshold.value=-7;limiter.knee.value=12;limiter.ratio.value=8;limiter.attack.value=.003;limiter.release.value=.2;bus.connect(limiter);limiter.connect(ctx.destination);fxNodes.push(limiter);
     const noise=ctx.createBuffer(2,Math.ceil(ctx.sampleRate*5.4),ctx.sampleRate);
     for(let c=0;c<2;c++){const data=noise.getChannelData(c);let last=0;for(let i=0;i<data.length;i++){last=(last+(Math.random()*2-1)*.08)/1.02;data[i]=last*2.8;}}
     const source=ctx.createBufferSource();source.buffer=noise;
     const filter=ctx.createBiquadFilter();filter.type='bandpass';filter.Q.value=.65;filter.frequency.setValueAtTime(150,t);filter.frequency.exponentialRampToValueAtTime(2200,t+4.1);filter.frequency.exponentialRampToValueAtTime(180,t+5.2);
-    const swell=ctx.createGain();swell.gain.setValueAtTime(0,t);swell.gain.linearRampToValueAtTime(.12,t+.45);swell.gain.exponentialRampToValueAtTime(.95,t+4.1);swell.gain.exponentialRampToValueAtTime(.001,t+5.3);
+    const swell=ctx.createGain();swell.gain.setValueAtTime(0,t);swell.gain.linearRampToValueAtTime(.07,t+1.15);swell.gain.exponentialRampToValueAtTime(.65,t+4.1);swell.gain.exponentialRampToValueAtTime(.001,t+5.3);
     const pan=ctx.createStereoPanner?.();source.connect(filter);filter.connect(swell);if(pan){swell.connect(pan);pan.connect(bus);pan.pan.setValueAtTime(-.6,t);pan.pan.linearRampToValueAtTime(.6,t+2.3);pan.pan.linearRampToValueAtTime(0,t+4.4);}else swell.connect(bus);source.start(t);source.stop(t+5.4);
     fxNodes.push(source,bus,filter,swell);if(pan)fxNodes.push(pan);
-    // The arrival impact is a synthesized falling low tone, never a sampled film effect.
-    [0,4.35].forEach((offset,index)=>{const osc=ctx.createOscillator(),g=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(index?110:80,t+offset);osc.frequency.exponentialRampToValueAtTime(38,t+offset+.65);g.gain.setValueAtTime(0,t+offset);g.gain.linearRampToValueAtTime(index ? 1.05 : .85,t+offset+.015);g.gain.exponentialRampToValueAtTime(.001,t+offset+.9);osc.connect(g);g.connect(bus);osc.start(t+offset);osc.stop(t+offset+1);fxNodes.push(osc,g);});
-    [0.03,4.28].forEach((offset,index)=>{
-      const burst=ctx.createBufferSource();burst.buffer=noise;
-      const low=ctx.createBiquadFilter();low.type='lowpass';low.frequency.setValueAtTime(6500,t+offset);low.frequency.exponentialRampToValueAtTime(160,t+offset+.85);
-      const amp=ctx.createGain();amp.gain.setValueAtTime(0,t+offset);amp.gain.linearRampToValueAtTime(index?1.8:1.3,t+offset+.018);amp.gain.exponentialRampToValueAtTime(.001,t+offset+1.05);
-      burst.connect(low);low.connect(amp);amp.connect(bus);burst.start(t+offset);burst.stop(t+offset+1.08);fxNodes.push(burst,low,amp);
-    });
+    // A long rising swell replaces percussive impacts: presence without a startle.
+    const low=ctx.createOscillator(),lowGain=ctx.createGain();low.type='sine';low.frequency.setValueAtTime(66,t);low.frequency.linearRampToValueAtTime(94,t+3.6);low.frequency.exponentialRampToValueAtTime(48,t+5.25);
+    lowGain.gain.setValueAtTime(0,t);lowGain.gain.linearRampToValueAtTime(.07,t+1.3);lowGain.gain.linearRampToValueAtTime(.25,t+3.8);lowGain.gain.exponentialRampToValueAtTime(.001,t+5.3);low.connect(lowGain);lowGain.connect(bus);low.start(t);low.stop(t+5.4);fxNodes.push(low,lowGain);
     setTimeout(()=>{if(fxNodes.includes(bus))stopTunnelFx();},5600);
   }
   window.ZRZAudio={

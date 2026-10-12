@@ -25,27 +25,25 @@
   const stage=document.querySelector('.photo-sphere');if(!stage)return;
   const cards=[...stage.querySelectorAll('.sphere-photo')];const toggle=document.querySelector('.sphere-toggle');
   let yaw=0,pitch=-.07,paused=false,hover=false,focused=false,visible=true,drag=null,moved=false,frame=0,last=0,size=500;
-  const points=cards.map((_,i)=>{
-    if(i===0)return [0,.05,1];
-    const y=1-2*(i-.5)/(cards.length-1);const radius=Math.sqrt(1-y*y);const theta=i*2.39996323;
-    return [Math.cos(theta)*radius,y,Math.sin(theta)*radius];
-  });
   const motion=()=>root.dataset.motion==='on'&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
   function draw(){
-    const radius=Math.min(size,stage.clientHeight)*(.37+Math.sin(yaw*1.8)*.013);
+    const cols=size<600?3:size<950?5:6,rows=Math.ceil(cards.length/cols),cell=size/cols;
+    const cardWidth=Math.min(cell*.68,148),cardHeight=cardWidth*1.25,rowHeight=cardHeight+44;
+    stage.style.height=(rows*rowHeight+70)+'px';stage.style.setProperty('--flow-card-width',cardWidth+'px');
     cards.forEach((card,i)=>{
-      const [x,y,z]=points[i];const rx=x*Math.cos(yaw)+z*Math.sin(yaw),rz=z*Math.cos(yaw)-x*Math.sin(yaw);
-      const ry=y*Math.cos(pitch)-rz*Math.sin(pitch),depth=y*Math.sin(pitch)+rz*Math.cos(pitch);
-      const scale=.56+(depth+1)*.27;
-      card.style.transform=`translate(-50%,-50%) translate3d(${(rx*radius).toFixed(2)}px,${(ry*radius).toFixed(2)}px,0) rotate(${(Math.sin(yaw*1.4+i)*4).toFixed(2)}deg) scale(${scale.toFixed(3)})`;
-      card.style.opacity=(depth>=0?1:Math.max(.06,1+depth*2.8)).toFixed(2);card.style.zIndex=String(Math.round((depth+1)*100));
-      card.style.filter=`brightness(${depth>=0?1:.72})`;
+      const row=Math.floor(i/cols),col=i%cols,count=Math.min(cols,cards.length-row*cols);
+      const x=(col+.5+(cols-count)/2)*cell,y=44+row*rowHeight+cardHeight/2+Math.sin(i*2.4)*8;
+      const sample=window.ZRZCurrent?.sample(x/90,y/90,yaw)||{h:Math.sin(yaw*.8+i)*.12,dx:0,dy:0};
+      const driftX=Math.sin(yaw*.38+row*.55)*Math.min(12,cell*.08),driftY=sample.h*22;
+      card.style.left=x+'px';card.style.top=y+'px';
+      card.style.transform='translate(-50%,-50%) translate3d('+driftX.toFixed(2)+'px,'+driftY.toFixed(2)+'px,0) rotate('+([-5,2,4,-3,5,-2][(col+row)%6]+sample.dx*9).toFixed(2)+'deg)';
+      card.style.opacity='1';card.style.zIndex=String(row+1);card.style.filter='none';
     });
   }
   function active(){return motion()&&!root.classList.contains('is-arriving')&&!root.classList.contains('arrival-pending')&&!paused&&!hover&&!focused&&!drag&&visible&&!document.hidden&&!document.querySelector('dialog[open]');}
-  function tick(time){frame=0;const dt=Math.min(50,time-(last||time));last=time;if(active()){yaw+=dt*.00021;draw();frame=requestAnimationFrame(tick);}}
+  function tick(time){frame=0;const dt=Math.min(50,time-(last||time));last=time;if(active()){yaw+=dt*.001;draw();frame=requestAnimationFrame(tick);}}
   function resume(){last=0;if(active()&&!frame)frame=requestAnimationFrame(tick);}
-  function sync(){toggle.disabled=!motion();toggle.textContent=!motion()?'动态已关闭':paused?'继续旋转 ↻':'暂停旋转 Ⅱ';toggle.setAttribute('aria-pressed',String(paused));draw();resume();}
+  function sync(){toggle.disabled=!motion();toggle.textContent=!motion()?'动态已关闭':paused?'继续漂流 ↻':'暂停漂流 Ⅱ';toggle.setAttribute('aria-pressed',String(paused));draw();resume();}
   new ResizeObserver(entries=>{size=entries[0].contentRect.width;draw();}).observe(stage);
   new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;resume();},{threshold:.05}).observe(stage);
   new MutationObserver(sync).observe(root,{attributes:true,attributeFilter:['data-motion']});
@@ -75,6 +73,6 @@
   dialog.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>show(selected+Number(b.dataset.step))));
   dialog.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();show(selected+(e.key==='ArrowRight'?1:-1));}});
   dialog.addEventListener('close',()=>{document.body.classList.remove('photo-open');dialog.querySelector('img').removeAttribute('src');photoFocus?.focus({preventScroll:true});resume();});
-  stage.classList.add('is-orbit-ready');
+  stage.classList.add('is-orbit-ready','is-flow-field');
   sync();
 })();
