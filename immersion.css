@@ -18,13 +18,13 @@
 .floating-library .book-ripple::after{animation-play-state:paused}.floating-library.is-reading-visible .book-ripple::after{animation-play-state:running}.effects-hidden .book-float,.effects-hidden .book-ripple::after{animation-play-state:paused!important}
 /* Buoyancy replaces airborne bobbing; contact reflections stay close to the water. */
 .index #my-books.floating-library{background:#092e3a}.floating-library .reading-water{opacity:.8}.floating-library::before{background:linear-gradient(#092d38d9,transparent 35%,#092d38a6 92%)}
-.floating-library .book-float{animation:none!important;transform:translateX(var(--drift,0px));perspective:1000px}
+.floating-library .book-float{animation:none!important;transform:translate3d(var(--drift,0px),var(--current-y,0px),0) rotate(var(--current-turn,0deg)) scale(var(--book-scale,1));perspective:1000px;will-change:transform}
 .floating-library .signature-cover:not(.book-reflection){transform:translateY(var(--heave,0px)) rotateX(calc(55deg + var(--water-pitch,0deg))) rotateZ(calc(var(--book-angle) + var(--water-roll,0deg)));box-shadow:1px 2px #bec6b7,2px 4px #e0dfcd,3px 6px #708e89,4px 8px #d3d6c6,4px 10px 2px #031b27b3,6px 14px 7px #031b2780;transition:box-shadow .4s,filter .4s}
 .floating-library .signature-book:hover .signature-cover:not(.book-reflection),.floating-library .signature-book:focus-visible .signature-cover:not(.book-reflection){filter:brightness(1.06);box-shadow:1px 2px #bec6b7,2px 4px #e0dfcd,3px 6px #708e89,4px 8px #d3d6c6,4px 10px 2px #031b27b3,0 0 22px #a0d7d02b}
 .floating-library .book-reflection{position:absolute;top:250px;left:0;width:100%;transform-origin:50% 0;transform:translateY(var(--heave,0px)) scaleY(-.24) skewX(-8deg) rotateZ(var(--book-angle));opacity:.16;filter:blur(2px);mask-image:linear-gradient(transparent,#000 40%,transparent);box-shadow:none;pointer-events:none}
 .floating-library .book-ripple{left:-10%;right:-10%;top:150px;height:83px;border-color:#beeee12d;box-shadow:0 0 0 10px #b6ebea05,0 0 0 21px #c4f3ee07;transform:translateY(calc(var(--heave,0px)*.2)) rotate(var(--book-angle))}.floating-library .book-ripple::after{animation:none;transform:scale(1.18);border-color:#d2f6f028}
-.index .water-memories{display:grid!important;grid-template-columns:minmax(200px,.65fr) minmax(0,1.35fr);gap:36px;align-items:center;padding:45px 0 35px}
-.water-memories .orbit-intro{display:block;margin:0}.water-memories .orbit-intro h2{font-size:clamp(30px,3.4vw,45px);margin:22px 0}.water-memories .orbit-intro>p:not(.section-label){font-size:14px;line-height:2}.water-memories .orbit-intro>.glow-link{margin-top:20px;display:inline-flex}.water-memories .memory-orbit{width:100%;max-width:670px;margin:0;isolation:isolate;grid-area:auto}.water-memories .orbit-aura,.water-memories .orbit-particles{display:none}
+.index .water-memories{display:grid!important;grid-template-columns:minmax(200px,.43fr) minmax(0,1.57fr);gap:36px;align-items:center;padding:45px 0 35px}
+.water-memories .orbit-intro{display:block;margin:0}.water-memories .orbit-intro h2{font-size:clamp(30px,3.4vw,45px);margin:22px 0}.water-memories .orbit-intro>p:not(.section-label){font-size:14px;line-height:2}.water-memories .orbit-intro>.glow-link{margin-top:20px;display:inline-flex}.water-memories .memory-orbit{width:100%;max-width:880px;margin:0;isolation:isolate;grid-area:auto}.water-memories .orbit-aura,.water-memories .orbit-particles{display:none}
 .water-memories .photo-sphere.is-flow-field{height:480px;aspect-ratio:auto;border:0;border-radius:48%;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse,#133b48c9,transparent 70%);touch-action:pan-y;mask-image:radial-gradient(ellipse,#000 58%,#000b 72%,transparent 88%)}
 .memory-water{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1;opacity:.82;mask-image:radial-gradient(ellipse,#000 45%,transparent 72%)}
 .water-memories .sphere-photo{width:var(--flow-card-width,110px);height:auto;aspect-ratio:4/5;padding:3px 3px 10px;border:1px solid #cce5dfb0;border-radius:2px;background:#dce5dc;box-shadow:1px 3px 2px #00131ac9,4px 7px 8px #02172480;transition:box-shadow .2s;transform-origin:center;overflow:visible}.water-memories .sphere-photo img{border-radius:0;object-fit:cover}
@@ -42,4 +42,12 @@
 @media(prefers-reduced-motion:reduce){.float-island{translate:none;rotate:none}.water-memories .photo-sphere.is-flow-field{display:flex;gap:16px;height:220px!important;padding:25px 15px;overflow-x:auto;mask-image:none;border-radius:12px;align-items:center}.water-memories .sphere-photo{position:relative;left:auto!important;top:auto!important;width:120px;transform:none!important;flex:0 0 120px;opacity:1!important;filter:none!important}.book-float{transform:none!important}.poster-breeze{transition:none}}
 .floating-library .signature-book:hover .book-reflection,.floating-library .signature-book:focus-visible .book-reflection{transform:translateY(var(--heave,0px)) scaleY(-.24) skewX(-8deg) rotateZ(var(--book-angle));box-shadow:none}
 .poster-breeze[hidden]{display:none}
-.index .water-memories .memory-orbit{max-width:670px;width:100%}
+.index .water-memories .memory-orbit{max-width:880px;width:100%}
+
+/* Give the current room to carry the books; captions remain still and readable. */
+.floating-library .signature-shelf{padding-top:40px;padding-bottom:8px}.floating-library .book-float{height:325px}
+@media(max-width:1100px){.floating-library .book-float{height:295px}}
+@media(max-width:760px){.floating-library .book-float{height:275px}.index .water-memories .memory-orbit{width:calc(100% + 24px);max-width:none;margin-inline:-12px}}
+@media(max-width:380px){.floating-library .book-float{height:255px}}
+
+@media(max-width:760px){.floating-library .book-float{--book-scale:.94}}

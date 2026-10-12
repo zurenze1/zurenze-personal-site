@@ -35,7 +35,7 @@
       if(held.has(card))return;
       const lane=i%3,phase=i*2.399963+ yaw*(.14+lane*.012);
       const flow=phase+.16*Math.sin(phase*2+lane);
-      const reach=.48+lane*.24,rx=(size/2-cardWidth*.75-16)*reach,ry=(height/2-cardWidth*.84-23)*reach;
+      const reach=.56+lane*.20,rx=(size/2-cardWidth*.75-16)*reach,ry=(height/2-cardWidth*.84-23)*reach;
       const x=size/2+Math.cos(flow)*rx+Math.sin(flow*2+lane)*size*.025;
       const y=height/2+Math.sin(flow)*ry+Math.sin(flow*3+lane)*9+pitch*18;
       const depth=(Math.sin(flow)+1)/2,scale=.64+depth*.4;
