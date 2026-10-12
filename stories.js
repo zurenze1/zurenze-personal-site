@@ -42,13 +42,14 @@
       card.style.filter=`brightness(${depth>=0?1:.72})`;
     });
   }
-  function active(){return motion()&&!paused&&!hover&&!focused&&!drag&&visible&&!document.hidden&&!document.querySelector('dialog[open]');}
+  function active(){return motion()&&!root.classList.contains('is-arriving')&&!root.classList.contains('arrival-pending')&&!paused&&!hover&&!focused&&!drag&&visible&&!document.hidden&&!document.querySelector('dialog[open]');}
   function tick(time){frame=0;const dt=Math.min(50,time-(last||time));last=time;if(active()){yaw+=dt*.00012;draw();frame=requestAnimationFrame(tick);}}
   function resume(){last=0;if(active()&&!frame)frame=requestAnimationFrame(tick);}
   function sync(){toggle.disabled=!motion();toggle.textContent=!motion()?'动态已关闭':paused?'继续旋转 ↻':'暂停旋转 Ⅱ';toggle.setAttribute('aria-pressed',String(paused));draw();resume();}
   new ResizeObserver(entries=>{size=entries[0].contentRect.width;draw();}).observe(stage);
   new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;resume();},{threshold:.05}).observe(stage);
   new MutationObserver(sync).observe(root,{attributes:true,attributeFilter:['data-motion']});
+  new MutationObserver(resume).observe(root,{attributes:true,attributeFilter:['class']});
   // Pause while people read or interact; background tabs never spend animation frames.
   new MutationObserver(resume).observe(document.body,{subtree:true,attributes:true,attributeFilter:['open']});
   document.addEventListener('visibilitychange',resume);

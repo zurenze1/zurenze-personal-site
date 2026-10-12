@@ -1,0 +1,63 @@
+/* Midnight blue and warm stone. Colour is applied to the setting, never the photos. */
+.index{--paper:#080f1e;--ink:#f1ede8;--muted:#aab9cc;--blue:#dcc7b5;--line:#a8bdd229;--wash:#142338;background:#080f1e}
+.index::before{background:radial-gradient(ellipse at 76% 15%,#20487930,transparent 45%)}
+.index .site-header{border-color:#a8bdd229}
+.index .site-header .header-links a{background:#101e2f;color:#b7c3d2;border-color:#7592b238}
+.index .site-header .header-links a[aria-current=page]{background:#dcc7b5;border-color:#dcc7b5;color:#172238}
+.index .home-hero{position:relative;isolation:isolate}
+.index .home-hero::before{content:'';position:absolute;inset:-60px -35px -20px 35%;background:radial-gradient(ellipse at 62% 60%,#26538145,transparent 65%);pointer-events:none;z-index:-1}
+.index .hero-words .eyebrow{color:#a8b9ce;letter-spacing:.15em}
+.index .hero-name{color:#e7dfd6}
+.index .portrait-hero h1{font-weight:400;letter-spacing:.015em;line-height:1.48}
+.index .portrait-hero h1 .arrival-line{display:block;overflow:hidden;color:#f1ede8;white-space:nowrap;padding-bottom:.08em;margin-bottom:-.08em}
+.index .portrait-hero h1 .arrival-line:last-child{color:#d5bca7}
+.arrival-line i{display:inline-block;font-style:normal;will-change:auto}
+.index .hero-description{color:#b3c0d0}
+.index .primary-link{background:#dfcbbb;border-color:#dfcbbb;color:#132137}
+.index .primary-link:hover{background:#f0ddcc;border-color:#f0ddcc}
+.index .douyin-primary span{color:#455266}
+.index .hero-actions>.text-link{color:#dfd6ca;border-color:#8e9cb0}
+.index .hero-film-links a{background:#14263bb3;color:#e5d8cb;border-color:#8da1ba4f}
+.index .hero-film-links a small{color:#a8b8cb}
+.index .orbit-aura{border-color:#7a9ab133;background:radial-gradient(ellipse,#335a8740 10%,#1b355529 48%,transparent 70%)}
+.index .orbit-aura::before,.index .orbit-aura::after{border-color:#7a9ab127}
+.index .sphere-photo{border-color:#d5c5b6;background:#d5c5b6}
+.index .sphere-caption{color:#aabbd0}
+.index .sphere-toggle{color:#e0d3c5;border-color:#70849b}
+.index .chapter-jumps a{background:#142238;color:#d9dfe8;border-color:#8ca3bc42}
+.index .chapter-jumps a:hover{background:#20364e;border-color:#cdbba9}
+.index .arrival-replay{color:#d8c3b0;border-color:#8fa2ba66}
+.index .hero-footnote{border-color:#a8bdd229}
+.index .home-contact#life-archive-project{--ink:#ece1d6;--muted:#bdc8d5;--blue:#e0c5ad;--line:#90a6bd40;background:linear-gradient(120deg,#14253b,#0d1b2e);border:1px solid #8199b540;border-left:3px solid #cbb19c}
+.index #life-archive-project .section-label,.index #life-archive-project .text-link{color:#dfc5af;border-color:#a99783}
+
+/* An intimate listening room, consistent on the homepage and reading page. */
+.index .home-listening,.notes .music-section{--ink:#f0e6dc;--muted:#b2c1d2;--blue:#dcc2aa;--line:#8aa4be45;--wash:#172b43;background:radial-gradient(ellipse at 15% 55%,#203d5a,#0e1d30 70%);color:var(--ink)}
+.home-listening .music-player,.notes .music-section .music-player{background:#091423;border-color:#7493b34d;color:#eee4da}
+.home-listening .music-track{border-color:#8099b34d}
+.home-listening .track-copy small,.home-listening .record-label,.home-listening .audio-art small,.home-listening>.music-note,.home-listening>.music-credits,.notes .music-section .track-copy p,.notes .music-section .track-copy small,.notes .music-section .section-intro>p{color:#b1c0d1}
+.home-listening .listen-button,.notes .music-section .listen-button{background:#dfc5ad;color:#15243a;border-color:#dfc5ad}
+.home-listening .listen-button[aria-pressed=true],.notes .music-section .listen-button[aria-pressed=true]{background:#f4e2d2;color:#102138}
+.home-listening .vinyl-disc>span{background:#d3b79f;color:#19283b}
+.home-listening>.music-note{border-color:#8aa4be45}
+.notes .music-section .music-track{background:#14263b;border-color:#8aa4be45}
+
+/* The existing page enters directly: image, masked type, then actions. */
+.is-arriving .hero-words,.is-arriving .hero-summary{animation:none}
+.arrival-pending .hero-words>.eyebrow,.arrival-pending .hero-name,.arrival-pending .arrival-line,.arrival-pending .hero-film-links,.arrival-pending .hero-summary{opacity:0}
+.is-arriving .memory-orbit{animation:cinemaPortrait 1.5s cubic-bezier(.18,.7,.25,1) both}
+.is-arriving .hero-words>.eyebrow{animation:cinemaLift .65s .08s both}
+.is-arriving .hero-name{animation:cinemaLift .8s .18s both}
+.is-arriving .arrival-line i{animation:cinemaLetter .95s cubic-bezier(.16,.78,.25,1) both;animation-delay:calc(.24s + var(--letter)*.028s);will-change:transform}
+.is-arriving .arrival-line:last-child i{animation-delay:calc(.40s + var(--letter)*.028s)}
+.is-arriving .hero-description{animation:cinemaLift .85s .68s both}
+.is-arriving .hero-film-links{animation:cinemaLift .8s .84s both}
+.is-arriving .hero-actions{animation:cinemaLift .8s 1s both}
+.cinematic-skip{position:absolute;top:4px;right:0;z-index:220;padding:8px 13px;border:1px solid #869ab14d;border-radius:3px;background:#0b192bed;color:#d9c6b4;font:11px/1.6 var(--sans);cursor:pointer}
+@keyframes cinemaPortrait{from{opacity:.35;transform:translateY(22px) scale(1.045)}to{opacity:1;transform:none}}
+@keyframes cinemaLetter{from{transform:translateY(115%) rotate(4deg);opacity:0}to{transform:translateY(0) rotate(0);opacity:1}}
+@keyframes cinemaLift{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media(max-width:760px){.index .home-hero::before{inset:20% -10px 0;background:radial-gradient(ellipse at 50% 65%,#264e7440,transparent 65%)}.cinematic-skip{top:0}.index .portrait-hero h1{font-size:clamp(25px,7.5vw,42px)}}
+@media(prefers-reduced-motion:reduce){.is-arriving .memory-orbit,.is-arriving .arrival-line i,.is-arriving .hero-words>*,.is-arriving .hero-summary>*{animation:none!important;transform:none!important;opacity:1!important}.arrival-pending .hero-words>*,.arrival-pending .hero-summary{opacity:1!important}.cinematic-skip{display:none}}
+[data-motion=off] .cinematic-skip{display:none}
+[data-motion=off] .is-arriving .memory-orbit,[data-motion=off] .arrival-line i{animation:none!important;transform:none!important;opacity:1!important}
