@@ -26,31 +26,27 @@
   const cards=[...stage.querySelectorAll('.sphere-photo')];const toggle=document.querySelector('.sphere-toggle');
   let yaw=0,pitch=-.07,paused=false,focused=false,visible=true,drag=null,moved=false,frame=0,last=0,size=500;
   const motion=()=>root.dataset.motion==='on'&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // Closed streamlines keep the memories close together; every photograph comes forward in turn.
+  const points=cards.map((_,i)=>{const y=1-2*(i+.5)/cards.length,r=Math.sqrt(1-y*y),angle=i*2.39996323;return[Math.cos(angle)*r,y,Math.sin(angle)*r];});
   const held=new Set();
+  cards.forEach((card,i)=>card.style.setProperty('--glint-delay',(-i*.43)+'s'));
   function draw(){
-    const height=stage.clientHeight,cardWidth=Math.min(112,Math.max(68,size*.175));
+    const radius=Math.min(size,stage.clientHeight)*.38,cardWidth=Math.min(106,Math.max(54,size*.13));
     stage.style.setProperty('--flow-card-width',cardWidth+'px');
     cards.forEach((card,i)=>{
       if(held.has(card))return;
-      const lane=i%3,phase=i*2.399963+ yaw*(.14+lane*.012);
-      const flow=phase+.16*Math.sin(phase*2+lane);
-      const reach=.56+lane*.20,rx=(size/2-cardWidth*.75-16)*reach,ry=(height/2-cardWidth*.84-23)*reach;
-      const x=size/2+Math.cos(flow)*rx+Math.sin(flow*2+lane)*size*.025;
-      const y=height/2+Math.sin(flow)*ry+Math.sin(flow*3+lane)*9+pitch*18;
-      const depth=(Math.sin(flow)+1)/2,scale=.64+depth*.4;
-      const sample=window.ZRZCurrent?.sample(x/90,y/90,yaw)||{h:0,dx:0};
-      const angle=Math.sin(flow+.7)*13+Math.sin(yaw*.6+i)*4+sample.dx*10;
-      card.style.left=x.toFixed(2)+'px';card.style.top=(y+sample.h*15).toFixed(2)+'px';
-      card.style.transform='translate(-50%,-50%) scale('+scale.toFixed(3)+') perspective(650px) rotateX('+(42+sample.h*12).toFixed(2)+'deg) rotateZ('+angle.toFixed(2)+'deg)';
-      card.style.opacity='1';card.style.zIndex=String(Math.round(10+depth*100));
-      card.style.filter='brightness('+(.78+depth*.22).toFixed(3)+')';
+      const [x,y,z]=points[i],rx=x*Math.cos(yaw)+z*Math.sin(yaw),rz=z*Math.cos(yaw)-x*Math.sin(yaw);
+      const tilt=pitch+Math.sin(yaw*.65)*.08,ry=y*Math.cos(tilt)-rz*Math.sin(tilt),depth=y*Math.sin(tilt)+rz*Math.cos(tilt);
+      const scale=.52+(depth+1)*.30;
+      card.style.left='50%';card.style.top='50%';
+      card.style.transform=`translate(-50%,-50%) translate3d(${(rx*radius).toFixed(2)}px,${(ry*radius).toFixed(2)}px,0) rotate(${(Math.sin(yaw+i)*3).toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+      card.style.opacity=(depth>=0?1:Math.max(.12,1+depth*1.3)).toFixed(3);card.style.zIndex=String(Math.round((depth+1)*100));
+      card.style.filter='brightness('+(depth>=0?1:.70)+')';
     });
   }
   function active(){return motion()&&!root.classList.contains('is-arriving')&&!root.classList.contains('arrival-pending')&&!paused&&!focused&&!drag&&visible&&!document.hidden&&!document.querySelector('dialog[open]');}
-  function tick(time){frame=0;const dt=Math.min(50,time-(last||time));last=time;if(active()){yaw+=dt*.001;draw();frame=requestAnimationFrame(tick);}}
-  function resume(){last=0;if(active()&&!frame)frame=requestAnimationFrame(tick);}
-  function sync(){toggle.disabled=!motion();toggle.textContent=!motion()?'动态已关闭':paused?'继续漂流 ↻':'暂停漂流 Ⅱ';toggle.setAttribute('aria-pressed',String(paused));draw();resume();}
+  function tick(time){frame=0;stage.classList.toggle('is-sphere-moving',active());const dt=Math.min(50,time-(last||time));last=time;if(active()){yaw+=dt*.00032;draw();frame=requestAnimationFrame(tick);}}
+  function resume(){stage.classList.toggle('is-sphere-moving',active());last=0;if(active()&&!frame)frame=requestAnimationFrame(tick);}
+  function sync(){stage.classList.toggle('is-sphere-moving',active());toggle.disabled=!motion();toggle.textContent=!motion()?'动态已关闭':paused?'继续旋转 ↻':'暂停旋转 Ⅱ';toggle.setAttribute('aria-pressed',String(paused));draw();resume();}
   new ResizeObserver(entries=>{size=entries[0].contentRect.width;draw();}).observe(stage);
   new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;resume();},{threshold:.05}).observe(stage);
   new MutationObserver(sync).observe(root,{attributes:true,attributeFilter:['data-motion']});
@@ -59,7 +55,7 @@
   new MutationObserver(resume).observe(document.body,{subtree:true,attributes:true,attributeFilter:['open']});
   document.addEventListener('visibilitychange',resume);
   cards.forEach(card=>{
-    card.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'){held.add(card);card.style.zIndex='150';}});
+    card.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'){held.add(card);card.style.zIndex='300';}});
     card.addEventListener('pointerleave',()=>{held.delete(card);});
   });
   stage.addEventListener('focusin',()=>{focused=true;});stage.addEventListener('focusout',e=>{focused=stage.contains(e.relatedTarget);resume();});
@@ -83,6 +79,6 @@
   dialog.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>show(selected+Number(b.dataset.step))));
   dialog.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();show(selected+(e.key==='ArrowRight'?1:-1));}});
   dialog.addEventListener('close',()=>{document.body.classList.remove('photo-open');dialog.querySelector('img').removeAttribute('src');photoFocus?.focus({preventScroll:true});resume();});
-  stage.classList.add('is-orbit-ready','is-flow-field');
+  stage.classList.add('is-orbit-ready','is-flow-field','is-photo-globe');
   sync();
 })();

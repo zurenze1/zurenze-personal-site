@@ -13,7 +13,7 @@
    items.push({el:float,host:book,type:'book',section:library,i,visible:false,x:i,y:0});
   });
  }
- const field=document.querySelector('.photo-sphere');if(field){water(field,'memory-water');document.querySelector('.orbit-section')?.classList.add('water-memories');}
+ const field=document.querySelector('.photo-sphere');if(field){const halo=document.createElement('span');halo.className='globe-halo';halo.setAttribute('aria-hidden','true');field.prepend(halo);document.querySelector('.orbit-section')?.classList.add('water-memories');}
  document.querySelectorAll('.home-films .film-card,.story-destinations>a,.home-listening,.culture-editorial,.home-life,.douyin-showcase,.home-contact').forEach((el,i)=>{el.classList.add('float-island');items.push({el,host:el,type:'island',section:el.parentElement,i,visible:false,x:i,y:i*.4});});
  function layout(){for(const item of items){const r=item.host.getBoundingClientRect(),s=item.section.getBoundingClientRect();if(item.type==='book'){const edge=innerWidth<=760?18:32;item.travelX=Math.max(0,Math.min(60,r.left-s.left-edge,s.right-r.right-edge));item.x=((r.left-s.left+r.width/2)/s.height-s.width/s.height/2)*9;item.y=(.5-(r.top-s.top+r.height*.55)/s.height)*9;}}}
  function apply(item){if(!item.visible)return;const el=item.el;if(item.host.matches(':hover,:focus-within'))return;const p=current.sample(item.x,item.y,current.time);

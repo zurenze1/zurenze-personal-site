@@ -1,0 +1,32 @@
+{
+  "type": "AI-generated culinary illustrations",
+  "method": "Built-in image_gen; web animation is code, not restaurant video",
+  "items": [
+    {
+      "id": "guojuan",
+      "prompt": "Anshun Guizhou guojuan 安顺裹卷: a dark ceramic plate with six small fresh rolls made of very thin translucent white rice sheets folded around finely shredded cucumber, carrot, mung bean sprouts and chopped herbs; chili sauce drizzled on top. Soft rice wrappers, NOT fried spring rolls, NOT dumplings. One cut roll reveals crisp vegetable filling.",
+      "asset": "assets/hometown/food/guojuan.webp"
+    },
+    {
+      "id": "suanfen",
+      "prompt": "Guiyang Guizhou suanfen 贵阳酸粉: a dark ceramic bowl filled with thick round white fermented rice noodles, light broth, red chili oil, roasted peanuts, chopped scallions and small diced pickled radish. Clearly round rice noodles, not wheat noodles or spaghetti.",
+      "asset": "assets/hometown/food/suanfen.webp"
+    },
+    {
+      "id": "laziji",
+      "prompt": "Guizhou laziji 贵州辣子鸡: small irregular bone-in pieces of chicken coated in glossy thick dark red pounded ciba-chili paste with visible softened minced chilies, ginger and garlic, a few green scallions, served in a dark ceramic shallow bowl. NOT Sichuan dry chili chicken buried under piles of whole dried chilies.",
+      "asset": "assets/hometown/food/laziji.webp"
+    },
+    {
+      "id": "yangyuba",
+      "prompt": "Guizhou yangyuba 洋芋粑: five rustic palm-sized flattened round mashed potato patties, golden brown crisp fried crust with small irregularities and tiny scallion flecks, soft pale potato visible in one split patty, a small dipping dish of chili powder beside it on a charcoal ceramic plate. NOT potato slices, not croquettes.",
+      "asset": "assets/hometown/food/yangyuba.webp"
+    },
+    {
+      "id": "kaoyu",
+      "prompt": "Guizhou-style spicy grilled whole fish 贵州烤鱼, split open and laid flat in a rectangular dark metal serving pan, grilled browned fish skin, red chili oil sauce, red and green peppers, onion, tofu and scallion accompaniments. The whole fish remains recognizable. No restaurant branding, no logo, generic culinary illustration.",
+      "asset": "assets/hometown/food/kaoyu.webp"
+    }
+  ],
+  "common_prompt": "Landscape 3:2 food editorial image; realistic natural culinary texture; no text, logos or people; three-quarter overhead composition; charcoal wood table; warm side light; muted teal background; illustrative scene, not a restaurant photograph."
+}

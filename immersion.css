@@ -51,3 +51,20 @@
 @media(max-width:380px){.floating-library .book-float{height:255px}}
 
 @media(max-width:760px){.floating-library .book-float{--book-scale:.94}}
+
+/* Restored globe: generous sphere diameter, staggered glints, and no flashing group. */
+.water-memories .photo-sphere.is-photo-globe{height:640px;mask-image:none;border-radius:0;background:radial-gradient(ellipse at center,#45a9cf16,transparent 66%)}
+.is-photo-globe .memory-water{display:none}
+.water-memories .is-photo-globe .sphere-photo{padding:3px;border-radius:5px;border-color:#b7ddec;box-shadow:0 8px 20px #0008,0 0 15px #74ceff50;overflow:visible}
+.water-memories .is-photo-globe .sphere-photo:nth-child(3n){border-color:#dec899;box-shadow:0 8px 20px #0008,0 0 17px #e6bc7250}
+.water-memories .is-photo-globe .sphere-photo::before{content:'';position:absolute;inset:0;z-index:2;border-radius:4px;background:linear-gradient(112deg,transparent 25%,#e4f8ff00 35%,#e4f8ff99 48%,#fff0 58%,transparent 75%);background-size:350% 100%;animation:photoGlint 6s ease-in-out infinite;animation-delay:var(--glint-delay);animation-play-state:paused;pointer-events:none}
+.water-memories .is-photo-globe .sphere-photo::after{content:'';position:absolute;inset:auto;right:-9px;top:-9px;width:20px;height:20px;border:0;border-radius:0;box-shadow:none;background:linear-gradient(90deg,transparent 43%,#effcff 50%,transparent 57%),linear-gradient(0deg,transparent 43%,#effcff 50%,transparent 57%);filter:drop-shadow(0 0 5px #b4edff);animation:photoTwinkle 4.8s ease-in-out infinite;animation-delay:var(--glint-delay);animation-play-state:paused;z-index:3;pointer-events:none}
+.is-photo-globe.is-sphere-moving .sphere-photo::before,.is-photo-globe.is-sphere-moving .sphere-photo::after{animation-play-state:running}
+.globe-halo{position:absolute;inset:8% 14%;border:1px solid #addcf32b;border-radius:50%;pointer-events:none;box-shadow:0 0 45px #318daf14,inset 0 0 70px #57bfe610}.globe-halo::before,.globe-halo::after{content:'';position:absolute;inset:12% -12%;border:1px solid #9bd7ec30;border-radius:50%;transform:rotate(-23deg) scaleY(.52)}.globe-halo::after{transform:rotate(48deg) scaleY(.4);border-color:#d8b77538}
+@keyframes photoGlint{0%,70%,100%{background-position:150% 0;opacity:0}75%{opacity:.65}90%{background-position:-50% 0;opacity:0}}
+@keyframes photoTwinkle{0%,60%,100%{opacity:.08;transform:scale(.3) rotate(0)}74%{opacity:.95;transform:scale(1.2) rotate(45deg)}87%{opacity:.12;transform:scale(.4) rotate(90deg)}}
+@media(max-width:760px){.water-memories .photo-sphere.is-photo-globe{height:410px}.globe-halo{inset:12% 6%}}
+[data-motion=off] .is-photo-globe .sphere-photo::before,[data-motion=off] .is-photo-globe .sphere-photo::after{animation:none;opacity:0}[data-motion=off] .globe-halo{display:none}
+@media(prefers-reduced-motion:reduce){.is-photo-globe .sphere-photo::before,.is-photo-globe .sphere-photo::after{animation:none;opacity:0}.globe-halo{display:none}}
+
+@media(min-width:761px){.water-memories .orbit-intro h2{font-size:clamp(27px,2.35vw,35px)}}
