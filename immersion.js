@@ -3,7 +3,7 @@
  const root=document.documentElement,reduced=matchMedia('(prefers-reduced-motion:reduce)');
  const current=window.ZRZCurrent={time:0,sample(x,y,t){const a=x*.85+y*.55-t*.65,b=x*1.55-y*.9-t*.42;return{h:Math.sin(a)*.13+Math.sin(b)*.055,dx:Math.cos(a)*.1105+Math.cos(b)*.08525,dy:Math.cos(a)*.0715-Math.cos(b)*.0495};}};
  const items=[],library=document.querySelector('#my-books');let frame=0,last=0;
- function water(parent,cls){const canvas=document.createElement('canvas');canvas.className='living-water '+cls;canvas.dataset.waterScene='7';canvas.dataset.tone='midnight';canvas.setAttribute('aria-hidden','true');parent.prepend(canvas);return canvas;}
+ function water(parent,cls){const canvas=document.createElement('canvas');canvas.className='living-water '+cls;canvas.dataset.waterScene=cls==='memory-water'?'8':'7';canvas.dataset.tone='midnight';canvas.setAttribute('aria-hidden','true');parent.prepend(canvas);return canvas;}
  if(library){
   water(library,'reading-water');library.classList.add('floating-library');
   library.querySelectorAll('.signature-book').forEach((book,i)=>{

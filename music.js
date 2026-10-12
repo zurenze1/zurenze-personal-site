@@ -315,7 +315,7 @@
     stopTunnelFx();if(!audioContext||audioContext.state!=='running')return;
     if(elapsed>1.2)return;
     const ctx=audioContext,t=ctx.currentTime,level=Number(volume.value)/100;
-    const bus=ctx.createGain();bus.gain.value=level*.72;
+    const bus=ctx.createGain();bus.gain.value=level*1.05;
     const limiter=ctx.createDynamicsCompressor();limiter.threshold.value=-7;limiter.knee.value=12;limiter.ratio.value=8;limiter.attack.value=.003;limiter.release.value=.2;bus.connect(limiter);limiter.connect(ctx.destination);fxNodes.push(limiter);
     const noise=ctx.createBuffer(2,Math.ceil(ctx.sampleRate*5.4),ctx.sampleRate);
     for(let c=0;c<2;c++){const data=noise.getChannelData(c);let last=0;for(let i=0;i<data.length;i++){last=(last+(Math.random()*2-1)*.08)/1.02;data[i]=last*2.8;}}
@@ -324,9 +324,28 @@
     const swell=ctx.createGain();swell.gain.setValueAtTime(0,t);swell.gain.linearRampToValueAtTime(.07,t+1.15);swell.gain.exponentialRampToValueAtTime(.65,t+4.1);swell.gain.exponentialRampToValueAtTime(.001,t+5.3);
     const pan=ctx.createStereoPanner?.();source.connect(filter);filter.connect(swell);if(pan){swell.connect(pan);pan.connect(bus);pan.pan.setValueAtTime(-.6,t);pan.pan.linearRampToValueAtTime(.6,t+2.3);pan.pan.linearRampToValueAtTime(0,t+4.4);}else swell.connect(bus);source.start(t);source.stop(t+5.4);
     fxNodes.push(source,bus,filter,swell);if(pan)fxNodes.push(pan);
-    // A long rising swell replaces percussive impacts: presence without a startle.
-    const low=ctx.createOscillator(),lowGain=ctx.createGain();low.type='sine';low.frequency.setValueAtTime(66,t);low.frequency.linearRampToValueAtTime(94,t+3.6);low.frequency.exponentialRampToValueAtTime(48,t+5.25);
-    lowGain.gain.setValueAtTime(0,t);lowGain.gain.linearRampToValueAtTime(.07,t+1.3);lowGain.gain.linearRampToValueAtTime(.25,t+3.8);lowGain.gain.exponentialRampToValueAtTime(.001,t+5.3);low.connect(lowGain);lowGain.connect(bus);low.start(t);low.stop(t+5.4);fxNodes.push(low,lowGain);
+    // Three audible movements: a warm lift, stereo glints, then a rounded arrival.
+    // All envelopes start at zero; no impulse or explosive noise burst.
+    const reverb=ctx.createConvolver(),wet=ctx.createGain();wet.gain.value=.34;
+    const impulse=ctx.createBuffer(2,Math.ceil(ctx.sampleRate*1.65),ctx.sampleRate);
+    for(let c=0;c<2;c++){const d=impulse.getChannelData(c);let smooth=0;for(let i=0;i<d.length;i++){smooth=smooth*.55+(Math.random()*2-1)*.45;d[i]=smooth*Math.pow(1-i/d.length,2.6)*Math.min(1,i/(ctx.sampleRate*.045));}}
+    reverb.buffer=impulse;reverb.connect(wet);wet.connect(bus);fxNodes.push(reverb,wet);
+    function tone(frequency,start,attack,duration,gain,position,type='sine',endFrequency=frequency){
+      const osc=ctx.createOscillator(),amp=ctx.createGain(),space=ctx.createStereoPanner();
+      osc.type=type;osc.frequency.setValueAtTime(frequency,t+start);osc.frequency.exponentialRampToValueAtTime(endFrequency,t+start+duration);
+      amp.gain.setValueAtTime(0,t+start);amp.gain.linearRampToValueAtTime(gain,t+start+attack);amp.gain.exponentialRampToValueAtTime(.0001,t+start+duration);
+      space.pan.value=position;osc.connect(amp);amp.connect(space);space.connect(bus);space.connect(reverb);
+      osc.start(t+start);osc.stop(t+start+duration);fxNodes.push(osc,amp,space);
+    }
+    tone(65.4,0,.8,4.7,.40,0,'sine',98);
+    tone(130.8,.12,1.1,4.6,.16,-.15,'triangle',196);
+    // Soft harmonics travel across the image rather than striking on the first frame.
+    [261.63,392,523.25,784].forEach((f,i)=>tone(f,.38+i*.68,.24,1.65,.10+i*.016,i%2?.55:-.55));
+    // The visual aperture opens at 4.1 s: a broad, rounded resonance with a bright tail.
+    tone(98,3.66,.38,1.68,.64,0,'sine',65.4);
+    tone(196,3.70,.40,1.60,.24,0,'sine',130.8);
+    tone(523.25,3.80,.3,1.5,.13,-.32);
+    tone(784,3.87,.3,1.43,.10,.32);
     setTimeout(()=>{if(fxNodes.includes(bus))stopTunnelFx();},5600);
   }
   window.ZRZAudio={

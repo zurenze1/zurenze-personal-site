@@ -24,23 +24,30 @@
   }
   const stage=document.querySelector('.photo-sphere');if(!stage)return;
   const cards=[...stage.querySelectorAll('.sphere-photo')];const toggle=document.querySelector('.sphere-toggle');
-  let yaw=0,pitch=-.07,paused=false,hover=false,focused=false,visible=true,drag=null,moved=false,frame=0,last=0,size=500;
+  let yaw=0,pitch=-.07,paused=false,focused=false,visible=true,drag=null,moved=false,frame=0,last=0,size=500;
   const motion=()=>root.dataset.motion==='on'&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Closed streamlines keep the memories close together; every photograph comes forward in turn.
+  const held=new Set();
   function draw(){
-    const cols=size<600?3:size<950?5:6,rows=Math.ceil(cards.length/cols),cell=size/cols;
-    const cardWidth=Math.min(cell*.68,148),cardHeight=cardWidth*1.25,rowHeight=cardHeight+44;
-    stage.style.height=(rows*rowHeight+70)+'px';stage.style.setProperty('--flow-card-width',cardWidth+'px');
+    const height=stage.clientHeight,cardWidth=Math.min(112,Math.max(68,size*.175));
+    stage.style.setProperty('--flow-card-width',cardWidth+'px');
     cards.forEach((card,i)=>{
-      const row=Math.floor(i/cols),col=i%cols,count=Math.min(cols,cards.length-row*cols);
-      const x=(col+.5+(cols-count)/2)*cell,y=44+row*rowHeight+cardHeight/2+Math.sin(i*2.4)*8;
-      const sample=window.ZRZCurrent?.sample(x/90,y/90,yaw)||{h:Math.sin(yaw*.8+i)*.12,dx:0,dy:0};
-      const driftX=Math.sin(yaw*.38+row*.55)*Math.min(12,cell*.08),driftY=sample.h*22;
-      card.style.left=x+'px';card.style.top=y+'px';
-      card.style.transform='translate(-50%,-50%) translate3d('+driftX.toFixed(2)+'px,'+driftY.toFixed(2)+'px,0) rotate('+([-5,2,4,-3,5,-2][(col+row)%6]+sample.dx*9).toFixed(2)+'deg)';
-      card.style.opacity='1';card.style.zIndex=String(row+1);card.style.filter='none';
+      if(held.has(card))return;
+      const lane=i%3,phase=i*2.399963+ yaw*(.14+lane*.012);
+      const flow=phase+.16*Math.sin(phase*2+lane);
+      const reach=.48+lane*.24,rx=(size/2-cardWidth*.75-16)*reach,ry=(height/2-cardWidth*.84-23)*reach;
+      const x=size/2+Math.cos(flow)*rx+Math.sin(flow*2+lane)*size*.025;
+      const y=height/2+Math.sin(flow)*ry+Math.sin(flow*3+lane)*9+pitch*18;
+      const depth=(Math.sin(flow)+1)/2,scale=.64+depth*.4;
+      const sample=window.ZRZCurrent?.sample(x/90,y/90,yaw)||{h:0,dx:0};
+      const angle=Math.sin(flow+.7)*13+Math.sin(yaw*.6+i)*4+sample.dx*10;
+      card.style.left=x.toFixed(2)+'px';card.style.top=(y+sample.h*15).toFixed(2)+'px';
+      card.style.transform='translate(-50%,-50%) scale('+scale.toFixed(3)+') perspective(650px) rotateX('+(42+sample.h*12).toFixed(2)+'deg) rotateZ('+angle.toFixed(2)+'deg)';
+      card.style.opacity='1';card.style.zIndex=String(Math.round(10+depth*100));
+      card.style.filter='brightness('+(.78+depth*.22).toFixed(3)+')';
     });
   }
-  function active(){return motion()&&!root.classList.contains('is-arriving')&&!root.classList.contains('arrival-pending')&&!paused&&!hover&&!focused&&!drag&&visible&&!document.hidden&&!document.querySelector('dialog[open]');}
+  function active(){return motion()&&!root.classList.contains('is-arriving')&&!root.classList.contains('arrival-pending')&&!paused&&!focused&&!drag&&visible&&!document.hidden&&!document.querySelector('dialog[open]');}
   function tick(time){frame=0;const dt=Math.min(50,time-(last||time));last=time;if(active()){yaw+=dt*.001;draw();frame=requestAnimationFrame(tick);}}
   function resume(){last=0;if(active()&&!frame)frame=requestAnimationFrame(tick);}
   function sync(){toggle.disabled=!motion();toggle.textContent=!motion()?'动态已关闭':paused?'继续漂流 ↻':'暂停漂流 Ⅱ';toggle.setAttribute('aria-pressed',String(paused));draw();resume();}
@@ -48,10 +55,13 @@
   new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;resume();},{threshold:.05}).observe(stage);
   new MutationObserver(sync).observe(root,{attributes:true,attributeFilter:['data-motion']});
   new MutationObserver(resume).observe(root,{attributes:true,attributeFilter:['class']});
-  // Pause while people read or interact; background tabs never spend animation frames.
+  // Pause for dialogs, keyboard focus and hidden tabs; hovering holds only the selected photo.
   new MutationObserver(resume).observe(document.body,{subtree:true,attributes:true,attributeFilter:['open']});
   document.addEventListener('visibilitychange',resume);
-  stage.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')hover=true;});stage.addEventListener('pointerleave',()=>{hover=false;resume();});
+  cards.forEach(card=>{
+    card.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'){held.add(card);card.style.zIndex='150';}});
+    card.addEventListener('pointerleave',()=>{held.delete(card);});
+  });
   stage.addEventListener('focusin',()=>{focused=true;});stage.addEventListener('focusout',e=>{focused=stage.contains(e.relatedTarget);resume();});
   toggle.addEventListener('click',()=>{paused=!paused;sync();});
   stage.addEventListener('pointerdown',e=>{if(!motion()||e.button!==0)return;drag={x:e.clientX,y:e.clientY,lastX:e.clientX,lastY:e.clientY,id:e.pointerId};moved=false;});

@@ -12,6 +12,7 @@
     float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5);}
     float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
     float heightAt(vec2 p,float kind){
+      if(kind>7.5){float r=length(p),a=atan(p.y,p.x);return sin(r*3.-a*2.+time*.85)*.075+sin(r*6.+a*3.-time*1.1)*.025;}
       if(kind>6.5)return sin(p.x*.85+p.y*.55-time*.65)*.13+sin(p.x*1.55-p.y*.9-time*.42)*.055+sin(p.x*7.+p.y*3.-time*.9)*.008+sin(p.x*12.-p.y*7.+time*.7)*.003;
       if(kind<.5){float swell=sin(p.x*.72+p.y*.95-time*1.35);return swell*.57+sin(p.x*1.7-p.y*1.9+time*1.85)*.19+sin(p.x*4.7+p.y*3.1-time*2.4)*.055+pow(max(0.,swell),6.)*.16;}
       if(kind<1.5){float r=length(p-vec2(.8,-.3));return sin(r*3.8-time*1.6)*.14/(1.+r*.22)+sin(length(p+vec2(2.2,1.))*5.-time)*.035;}
@@ -54,6 +55,7 @@
         if(kind>4.5&&kind<5.5){float lines=pow(max(0.,sin(p.x*2.7+h*4.)),18.);col+=vec3(.62,.38,.12)*lines*(.3+.7*noise(p*.8));}
         if(kind>5.5&&kind<6.5)col=mix(col,vec3(.18,.25,.29)+vec3(.24,.31,.33)*pow(n.y,24.),.7);
         if(kind>6.5){col=mix(vec3(.025,.085,.11),vec3(.09,.19,.22),clamp(n.y*.4+h*.6+.2,0.,1.));col+=vec3(.25,.34,.34)*shine*.35+vec3(.05,.08,.09)*pow(max(0.,sin(p.x*.7-p.y*.9+time*.2)),6.);}
+        if(kind>7.5){float r=length(p),a=atan(p.y,p.x);float trace=pow(max(0.,sin(r*4.-a*2.+time*.85)),18.);float broken=.3+.7*noise(p*2.+vec2(time*.2));col+=vec3(.20,.36,.38)*trace*broken*.65;}
         if(!overhead)col=mix(col,vec3(.15,.25,.33),smoothstep(15.,130.,-p.y));
       }
       col*=1.-.18*length((uv-.5)*vec2(.7,1.));
@@ -78,7 +80,7 @@
     function tick(now){frame=0;if(!active())return;if(now-last>=32){const dt=Math.min(.07,(now-(last||now))/1000);elapsed+=dt;blend=Math.min(1,blend+dt*.9);last=now;draw();}frame=requestAnimationFrame(tick);}
     function sync(){if(!active()){cancelAnimationFrame(frame);frame=0;last=0;blend=1;draw();}else if(!frame){last=0;frame=requestAnimationFrame(tick);}}
     if(canvas.closest('.page-atmosphere')){
-      const zones=[...document.querySelectorAll('[data-water-scene]')];let scrollFrame=0;
+      const zones=[...document.querySelectorAll('[data-water-scene]')].filter(zone=>!zone.classList.contains('memory-water'));let scrollFrame=0;
       function chooseScene(){scrollFrame=0;let next=defaultScene[page]||0;const line=innerHeight*.42;for(const zone of zones){const rect=zone.getBoundingClientRect();if(rect.top<=line&&rect.bottom>line){next=Number(zone.dataset.waterScene);break;}}if(next!==scene){previous=scene;scene=next;blend=active()?0:1;draw();}}
       window.addEventListener('scroll',()=>{if(!scrollFrame)scrollFrame=requestAnimationFrame(chooseScene);},{passive:true});chooseScene();
     }
