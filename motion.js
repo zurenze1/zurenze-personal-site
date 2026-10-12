@@ -118,7 +118,7 @@
   }
 
   // One display location per source photo; the dialog is an on-demand larger view.
-  const photos = [...document.querySelectorAll('main figure img')].filter(img => !img.closest('a, button'));
+  const photos = [...document.querySelectorAll('main figure img')].filter(img => !img.closest('a, button, .poster-visual'));
   if (!photos.length || typeof HTMLDialogElement === 'undefined') return;
   const dialog = document.createElement('dialog');
   dialog.className = 'photo-viewer';

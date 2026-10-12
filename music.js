@@ -11,18 +11,23 @@
   const save = (key, value) => {
     try { sessionStorage.setItem(key, String(value)); } catch { /* Playback works without storage. */ }
   };
-  let selection = read('ambient-track-v26', 'qingkong');
+  let selection = read('ambient-track-v27', 'refreshing');
   let platformFrame = null;
   let picker = null;
-  let backgroundWanted = read('ambient-enabled', 'true') === 'true';
+  let backgroundWanted = read('ambient-enabled-v27', 'true') === 'true';
   let waitingForGesture = false;
   let activeTrack = null;
   let introduction = null;
   let introductionPlaying = false;
   let pageLeaving = false;
   let audioContext, gain;
-  const savedVolume = Number(read('ambient-volume', '12'));
-  volume.value = Number.isFinite(savedVolume) ? Math.max(0, Math.min(30, savedVolume)) : 12;
+  let entrySeeking = false;
+  let fxNodes = [];
+  let entryRequest=0, entryPending=false;
+  const catalogue = {refreshing:{name:'晴朗钢琴',src:'assets/audio/piano-refreshing-peritune.mp3',start:70},canon:{name:'卡农',src:'assets/audio/canon-lee-galloway.mp3',start:0}};
+  const savedVolume = Number(read('ambient-volume-v27', '45'));
+  volume.max = '100';
+  volume.value = Number.isFinite(savedVolume) ? Math.max(0, Math.min(100, savedVolume)) : 45;
   // GainNode keeps the background quiet on mobile browsers that ignore audio.volume.
   try {
     const Context = window.AudioContext || window.webkitAudioContext;
@@ -37,7 +42,7 @@
     const level = Number(volume.value) / 100;
     if (gain) gain.gain.setValueAtTime(level, audioContext.currentTime);
     else background.volume = level;
-    save('ambient-volume', volume.value);
+    save('ambient-volume-v27', volume.value);
     volume.setAttribute('aria-valuetext', `${volume.value}%`);
   }
   setVolume();
@@ -55,41 +60,44 @@
     toggle.setAttribute('aria-pressed', String(playing));
     toggle.setAttribute('aria-label', playing ? '暂停背景轻音乐' : '开启背景轻音乐');
     dock.classList.toggle('is-playing', playing);
-    label.textContent = playing ? '卡农 · 循环播放' : activeTrack || introductionPlaying ? '卡农 · 已暂停' : backgroundWanted ? '卡农 · 点击开启' : '卡农 · 已关闭';
+    const name = catalogue[selection]?.name || '钢琴';
+    label.textContent = name + (playing ? ' · 播放中' : activeTrack || introductionPlaying ? ' · 已暂停' : backgroundWanted ? ' · 点击开启' : ' · 已关闭');
   }
   async function startBackground() {
-    if (selection !== 'canon' || !backgroundWanted || activeTrack || introductionPlaying || pageLeaving) return;
+    if (!catalogue[selection] || !backgroundWanted || activeTrack || introductionPlaying || pageLeaving) return false;
     waitingForGesture = false;
     try {
       await Promise.all([audioContext?.resume(), background.play()]);
       if (!backgroundWanted || activeTrack || introductionPlaying || pageLeaving) background.pause();
       renderBackground();
+      return !background.paused && (!audioContext || audioContext.state === 'running');
     } catch (error) {
       waitingForGesture = error.name === 'NotAllowedError' || audioContext?.state === 'suspended';
       renderBackground();
-      if (!waitingForGesture) label.textContent = '轻音乐 · 点此重试';
+      if (!waitingForGesture) label.textContent = '钢琴 · 点此重试';
+      return false;
     }
   }
   function restorePosition() {
-    const position = Number(read('ambient-position', '0'));
+    const position = entrySeeking ? 70 : Number(read('ambient-position-' + selection, String(catalogue[selection]?.start || 0)));
     if (Number.isFinite(position) && position > 0 && position < background.duration) background.currentTime = position;
   }
   if (background.readyState >= 1) restorePosition();
-  else background.addEventListener('loadedmetadata', restorePosition, { once: true });
+  background.addEventListener('loadedmetadata', restorePosition);
   background.addEventListener('play', renderBackground);
   background.addEventListener('pause', renderBackground);
   background.addEventListener('error', () => { waitingForGesture = false; label.textContent = '轻音乐 · 暂时无法加载'; });
   volume.addEventListener('input', setVolume);
   document.addEventListener('click', event => {
-    if (waitingForGesture && backgroundWanted && !activeTrack && !event.target.closest('.sound-dock, .music-section, .intro-video-section')) startBackground();
+    if (waitingForGesture && backgroundWanted && !activeTrack && !event.target.closest('.sound-dock, .music-section, .intro-video-section, .portal-entry')) startBackground();
   });
   document.addEventListener('keydown', event => {
-    if (waitingForGesture && backgroundWanted && !activeTrack && ['Enter', ' '].includes(event.key) && !event.target.closest('.sound-dock, .music-section, .intro-video-section')) startBackground();
+    if (waitingForGesture && backgroundWanted && !activeTrack && ['Enter', ' '].includes(event.key) && !event.target.closest('.sound-dock, .music-section, .intro-video-section, .portal-entry')) startBackground();
   });
   window.addEventListener('pagehide', () => {
     pageLeaving = true;
     closePlatform();
-    save('ambient-position', background.currentTime);
+    save('ambient-position-' + selection, background.currentTime);
     pauseIntroduction();
     background.pause();
     song?.pause();
@@ -135,6 +143,7 @@
   document.addEventListener('play', event => {
     if (event.target.tagName !== 'VIDEO') return;
     closePlatform();
+    stopTunnelFx();
     introduction = event.target;
     introductionPlaying = true;
     waitingForGesture = false;
@@ -153,6 +162,7 @@
   toggle.addEventListener('click', () => {
     if (selection === 'qingkong') { if(platformFrame) closePlatform(); else openQingkong(); return; }
     if (!background.paused && !activeTrack) {
+      stopTunnelFx();
       backgroundWanted = false;
       waitingForGesture = false;
       background.pause();
@@ -162,7 +172,7 @@
       backgroundWanted = true;
       startBackground();
     }
-    save('ambient-enabled', backgroundWanted);
+    save('ambient-enabled-v27', backgroundWanted);
     renderBackground();
   });
   if (player && song) {
@@ -210,7 +220,7 @@
     pauseIntroduction();
     backgroundWanted = false;
     waitingForGesture = false;
-    save('ambient-enabled', false);
+    save('ambient-enabled-v27', false);
     background.pause();
     renderBackground();
   }));
@@ -220,7 +230,7 @@
   picker.className = 'sound-picker';
   picker.hidden = true;
   picker.setAttribute('aria-label', '选择音乐');
-  picker.innerHTML = `<div class="sound-picker-heading"><strong>我的听歌时间</strong><button type="button" class="sound-picker-close" aria-label="关闭选歌并停止青空">×</button></div><div class="sound-choices"><button type="button" data-background="qingkong"><b>青空</b><small>Piano 毛 · 官方播放</small></button><button type="button" data-background="canon"><b>卡农</b><small>站内音频 · 循环播放</small></button></div><div class="qingkong-player"></div><p class="sound-source-note">青空在抖音官方播放器收听；点播放器播放，结束后可重播。卡农可以伴随网页循环播放。</p><a class="qingkong-original" href="https://www.douyin.com/video/7399206310245420325" target="_blank" rel="noopener noreferrer">去原作品收听 ↗</a>`;
+  picker.innerHTML = `<div class="sound-picker-heading"><strong>我的听歌时间</strong><button type="button" class="sound-picker-close" aria-label="关闭选歌并停止青空">×</button></div><div class="sound-choices"><button type="button" data-background="refreshing"><b>晴朗钢琴</b><small>PeriTune · 默认入场音乐</small></button><button type="button" data-background="qingkong"><b>青空</b><small>Piano 毛 · 官方播放</small></button><button type="button" data-background="canon"><b>卡农</b><small>站内音频 · 循环播放</small></button></div><div class="qingkong-player"></div><p class="sound-source-note">入场选曲：<a href="https://peritune.com/blog/2016/07/13/piano_refreshing/" target="_blank" rel="noopener noreferrer">Piano_Refreshing · PeriTune ↗</a><br>站内循环，无广告。<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a> · 已调整响度。<br>《青空》另用官方播放器收听。</p><a class="qingkong-original" href="https://www.douyin.com/video/7399206310245420325" target="_blank" rel="noopener noreferrer">去原作品收听 ↗</a>`;
   dock.append(picker);
   const frameHolder = picker.querySelector('.qingkong-player');
   new ResizeObserver(() => frameHolder.style.setProperty('--player-scale', String(frameHolder.clientWidth / 360))).observe(frameHolder);
@@ -236,7 +246,10 @@
   }
   function hidePicker(){closePlatform();picker.hidden=true;chooser.setAttribute('aria-expanded','false');}
   function selectTrack(id){
-    selection=id;save('ambient-track-v26',id);
+    selection=id;save('ambient-track-v27',id);
+    const track=catalogue[id];
+    if(track && background.getAttribute('src')!==track.src){background.src=track.src;background.load();}
+    dock.dataset.track=id;
     picker.querySelectorAll('[data-background]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.background===id)));
     renderBackground();
   }
@@ -255,11 +268,41 @@
   picker.addEventListener('keydown',event=>{if(event.key==='Escape'){hidePicker();chooser.focus();}});
   picker.querySelectorAll('[data-background]').forEach(button=>button.addEventListener('click',()=>{
     if(button.dataset.background==='qingkong'){openQingkong();return;}
-    closePlatform();stopTracks();pauseIntroduction();selectTrack('canon');backgroundWanted=true;save('ambient-enabled',true);startBackground();
+    closePlatform();stopTracks();pauseIntroduction();selectTrack(button.dataset.background);backgroundWanted=true;save('ambient-enabled-v27',true);startBackground();
   }));
-  picker.querySelector('.qingkong-original').addEventListener('click',()=>{closePlatform();background.pause();backgroundWanted=false;save('ambient-enabled',false);});
+  picker.querySelector('.qingkong-original').addEventListener('click',()=>{closePlatform();background.pause();backgroundWanted=false;save('ambient-enabled-v27',false);});
   document.querySelectorAll('[data-qingkong]').forEach(button=>button.addEventListener('click',openQingkong));
-  selectTrack(selection==='canon'?'canon':'qingkong');
+  function stopTunnelFx(){
+    fxNodes.forEach(node=>{try{node.stop();}catch{}try{node.disconnect();}catch{}});fxNodes=[];
+  }
+  function startTunnelFx(){
+    stopTunnelFx();if(!audioContext||audioContext.state!=='running')return;
+    const ctx=audioContext,t=ctx.currentTime,level=Number(volume.value)/100;
+    const bus=ctx.createGain();bus.gain.value=level*.65;bus.connect(ctx.destination);
+    const noise=ctx.createBuffer(2,Math.ceil(ctx.sampleRate*5.4),ctx.sampleRate);
+    for(let c=0;c<2;c++){const data=noise.getChannelData(c);let last=0;for(let i=0;i<data.length;i++){last=(last+(Math.random()*2-1)*.08)/1.02;data[i]=last*2.8;}}
+    const source=ctx.createBufferSource();source.buffer=noise;
+    const filter=ctx.createBiquadFilter();filter.type='bandpass';filter.Q.value=.65;filter.frequency.setValueAtTime(150,t);filter.frequency.exponentialRampToValueAtTime(2200,t+4.1);filter.frequency.exponentialRampToValueAtTime(180,t+5.2);
+    const swell=ctx.createGain();swell.gain.setValueAtTime(0,t);swell.gain.linearRampToValueAtTime(.12,t+.45);swell.gain.exponentialRampToValueAtTime(.6,t+4.1);swell.gain.exponentialRampToValueAtTime(.001,t+5.3);
+    const pan=ctx.createStereoPanner?.();source.connect(filter);filter.connect(swell);if(pan){swell.connect(pan);pan.connect(bus);pan.pan.setValueAtTime(-.6,t);pan.pan.linearRampToValueAtTime(.6,t+2.3);pan.pan.linearRampToValueAtTime(0,t+4.4);}else swell.connect(bus);source.start(t);source.stop(t+5.4);
+    fxNodes.push(source,bus,filter,swell);if(pan)fxNodes.push(pan);
+    // The arrival impact is a synthesized falling low tone, never a sampled film effect.
+    [0,4.35].forEach((offset,index)=>{const osc=ctx.createOscillator(),g=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(index?110:80,t+offset);osc.frequency.exponentialRampToValueAtTime(38,t+offset+.65);g.gain.setValueAtTime(0,t+offset);g.gain.linearRampToValueAtTime(index ? .48 : .26,t+offset+.015);g.gain.exponentialRampToValueAtTime(.001,t+offset+.9);osc.connect(g);g.connect(bus);osc.start(t+offset);osc.stop(t+offset+1);fxNodes.push(osc,g);});
+    setTimeout(()=>{if(fxNodes.includes(bus))stopTunnelFx();},5600);
+  }
+  window.ZRZAudio={
+    canAutoStart:()=>backgroundWanted,
+    startEntry:async()=>{
+      const request=++entryRequest;entryPending=true;
+      closePlatform();stopTracks();pauseIntroduction();entrySeeking=true;selectTrack('refreshing');backgroundWanted=true;save('ambient-enabled-v27',true);
+      try{background.currentTime=70;}catch{}
+      const ok=await startBackground();if(request!==entryRequest)return false;entryPending=false;if(ok){entrySeeking=false;startTunnelFx();}return ok;
+    },
+    cancelEntry:()=>{entryRequest++;if(entryPending){backgroundWanted=false;waitingForGesture=false;background.pause();entryPending=false;}},
+    stopEntryFx:stopTunnelFx,
+    silence:()=>{entryRequest++;entryPending=false;stopTunnelFx();backgroundWanted=false;waitingForGesture=false;save('ambient-enabled-v27',false);background.pause();renderBackground();}
+  };
+  selectTrack(['canon','qingkong','refreshing'].includes(selection)?selection:'refreshing');
   renderBackground();
-  startBackground();
+  if(!document.body.classList.contains('index') || location.hash || matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.motion==='off') startBackground();
 })();

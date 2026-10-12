@@ -64,7 +64,7 @@
     const page=Object.keys(defaultScene).find(name=>document.body.classList.contains(name));
     let scene=canvas.closest('.page-atmosphere')?defaultScene[page]||0:1,previous=scene,blend=1;
     const reduced=matchMedia('(prefers-reduced-motion: reduce)');let visible=true,frame=0,last=0,elapsed=0,lost=false;
-    const active=()=>!lost&&visible&&!document.hidden&&!reduced.matches&&root.dataset.motion==='on';
+    const active=()=>!lost&&visible&&!document.hidden&&!reduced.matches&&root.dataset.motion==='on'&&!root.classList.contains('portal-active');
     function draw(){gl.uniform1f(uniforms.time,elapsed);gl.uniform2f(uniforms.resolution,canvas.width,canvas.height);gl.uniform1f(uniforms.scene,scene);gl.uniform1f(uniforms.previous,previous);gl.uniform1f(uniforms.blend,blend);gl.drawArrays(gl.TRIANGLES,0,6);canvas.dataset.scene=String(scene);}
     function resize(){const dpr=Math.min(devicePixelRatio||1,1.15);canvas.width=Math.round(canvas.clientWidth*dpr);canvas.height=Math.round(canvas.clientHeight*dpr);gl.viewport(0,0,canvas.width,canvas.height);draw();}
     function tick(now){frame=0;if(!active())return;if(now-last>=32){const dt=Math.min(.07,(now-(last||now))/1000);elapsed+=dt;blend=Math.min(1,blend+dt*.9);last=now;draw();}frame=requestAnimationFrame(tick);}
@@ -75,7 +75,7 @@
       window.addEventListener('scroll',()=>{if(!scrollFrame)scrollFrame=requestAnimationFrame(chooseScene);},{passive:true});chooseScene();
     }
     new ResizeObserver(resize).observe(canvas);new IntersectionObserver(e=>{visible=e[0].isIntersecting;sync();},{threshold:0}).observe(canvas);
-    new MutationObserver(sync).observe(root,{attributes:true,attributeFilter:['data-motion']});reduced.addEventListener('change',sync);document.addEventListener('visibilitychange',sync);
+    new MutationObserver(sync).observe(root,{attributes:true,attributeFilter:['data-motion','class']});reduced.addEventListener('change',sync);document.addEventListener('visibilitychange',sync);
     canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();lost=true;canvas.hidden=true;cancelAnimationFrame(frame);frame=0;});
     window.addEventListener('pagehide',()=>{cancelAnimationFrame(frame);frame=0;});window.addEventListener('pageshow',sync);resize();sync();
   }

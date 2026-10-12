@@ -137,3 +137,5 @@ body{isolation:isolate}
 .qingkong-player:has(iframe){position:relative;width:100%;aspect-ratio:1/2;margin-top:14px;overflow:hidden;border-radius:6px;background:#000}.qingkong-player iframe{position:absolute;top:0;left:0;display:block;width:360px;height:720px;max-width:none;border:0;transform:scale(var(--player-scale,1));transform-origin:top left;background:#000}
 .sound-picker .sound-source-note{margin:12px 0 8px;font:12px/1.7 var(--sans);color:#b5c6d2}.sound-picker .qingkong-original{font:13px var(--sans);color:#e0c5a4;text-underline-offset:5px}.qingkong-art{background:radial-gradient(circle at 75% 20%,#8dcfe0,#3e728b 50%,#172e46);color:#f0f3ed}.qingkong-art span{font:500 32px/1.4 var(--sans);letter-spacing:.3em}.music-track-list .qingkong-track{border-color:#6b9aaa55}
 @media(max-width:600px){.sound-picker{width:320px}.sound-dock{max-width:calc(100vw - 24px)}.sound-picker{max-width:calc(100vw - 24px)}}
+
+.sound-choices{grid-template-columns:1fr 1fr}.sound-choices [data-background=refreshing]{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px}.sound-choices [data-background=refreshing] small{margin:0}

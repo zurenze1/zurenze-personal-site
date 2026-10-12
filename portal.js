@@ -8,11 +8,14 @@
   const stage = document.createElement('dialog');
   stage.className = 'portal-entry';
   stage.setAttribute('aria-label', '祖仁泽的个人网站，穿梭入场');
-  stage.innerHTML = `<canvas class="portal-cosmos" aria-hidden="true"></canvas><div class="portal-vignette" aria-hidden="true"></div><div class="portal-top"><span>祖仁泽 <small>／ 个人世界</small></span><button type="button" class="portal-skip" autofocus>跳过入场 ↗</button></div><div class="portal-depth" aria-hidden="true"><div class="portal-ring ring-one"></div><div class="portal-ring ring-two"></div><div class="portal-ring ring-three"></div><div class="portal-photo"><img src="assets/photos/seaside/coastal-rocks.jpg" alt=""><span>此心安处是吾乡</span></div><span class="portal-word word-one">从贵阳出发</span><span class="portal-word word-two">走过山海</span><span class="portal-word word-three">仍然热爱</span></div><div class="portal-bottom"><span class="portal-caption">穿过经历，遇见真实的我。</span><span class="portal-counter" aria-hidden="true">01 — 04</span><div class="portal-progress" aria-hidden="true"></div></div>`;
+  const photos = ['球场时光','海边时光','向海而行','两年军旅','工作之间','训练之外','旅途片刻','山野远行'];
+  stage.innerHTML = `<canvas class="portal-cosmos" aria-hidden="true"></canvas><div class="portal-vignette" aria-hidden="true"></div><div class="portal-top"><span>祖仁泽 <small>／ 个人世界</small></span><button type="button" class="portal-skip">跳过入场 ↗</button></div><div class="portal-depth" aria-hidden="true"><div class="portal-ring ring-one"></div><div class="portal-ring ring-two"></div><div class="portal-ring ring-three"></div>${photos.map((name,i)=>`<div class="portal-photo"><img src="assets/portal/portrait-${i+1}.webp" alt=""><span>${name}</span></div>`).join('')}</div><div class="portal-gate"><p class="portal-overline">EIGHT MOMENTS. ONE JOURNEY.</p><h2>每一段经历，<br>都通向此刻。</h2><p class="portal-help" role="status">准备好，一起穿过我的世界。</p><div class="portal-entry-actions"><button class="portal-sound" type="button" autofocus>有声进入 <span aria-hidden="true">↗</span></button><button class="portal-silent" type="button">静音进入</button></div><small>约 5 秒 · 建议开启声音</small></div><div class="portal-arrival" aria-hidden="true"></div><div class="portal-bottom"><span class="portal-caption">每一程，都算数。</span><span class="portal-counter" aria-hidden="true">READY / 05</span><div class="portal-progress" aria-hidden="true"></div></div>`;
   document.body.append(stage);
   const canvas = stage.querySelector('canvas');
   const gl = canvas.getContext('webgl', {alpha:false, antialias:false, powerPreference:'low-power'});
-  let program, uniform, frame = 0, start = 0, timer, returnFocus;
+  let program, uniform, frame = 0, start = 0, timer, returnFocus, attempt = 0;
+  const cards = [...stage.querySelectorAll('.portal-photo')];
+  let travelling = false, lastFrame = 0;
   if (gl) {
     const vertex = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
     const fragment = `precision highp float;
@@ -52,9 +55,54 @@
     if(program){gl.useProgram(program);const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);const p=gl.getAttribLocation(program,'p');gl.enableVertexAttribArray(p);gl.vertexAttribPointer(p,2,gl.FLOAT,false,0,0);uniform={size:gl.getUniformLocation(program,'size'),clock:gl.getUniformLocation(program,'clock')};}
   }
   function resize(){if(!program)return;const dpr=Math.min(devicePixelRatio||1,1.25);canvas.width=innerWidth*dpr;canvas.height=innerHeight*dpr;gl.viewport(0,0,canvas.width,canvas.height);}
-  function draw(now){if(!stage.open)return;const elapsed=(now-start)/1000;if(program){gl.uniform2f(uniform.size,canvas.width,canvas.height);gl.uniform1f(uniform.clock,elapsed);gl.drawArrays(gl.TRIANGLES,0,6);}stage.querySelector('.portal-counter').textContent=`0${Math.min(4,1+Math.floor(elapsed))} — 04`;frame=requestAnimationFrame(draw);}
-  function finish(){clearTimeout(timer);cancelAnimationFrame(frame);root.classList.remove('portal-active','arrival-pending','is-arriving');if(stage.open){stage.close();if(returnFocus?.isConnected)returnFocus.focus({preventScroll:true});}stage.classList.remove('is-travelling');}
-  function play(isReplay=false){finish();if(!allowed())return;returnFocus=isReplay?replay:document.querySelector('.hero-actions a');root.classList.add('portal-active');stage.showModal();resize();void stage.offsetWidth;stage.classList.add('is-travelling');start=performance.now();frame=requestAnimationFrame(draw);timer=setTimeout(finish,4600);}
+  function draw(now){
+    if(!stage.open)return;
+    if(now-lastFrame<30){frame=requestAnimationFrame(draw);return;}lastFrame=now;
+    const elapsed=travelling?(now-start)/1000:0;
+    if(program){gl.uniform2f(uniform.size,canvas.width,canvas.height);gl.uniform1f(uniform.clock,elapsed);gl.drawArrays(gl.TRIANGLES,0,6);}
+    const mobile=innerWidth<650, rx=Math.min(innerWidth*(mobile?.37:.34),530), ry=Math.min(innerHeight*(mobile?.32:.30),290);
+    cards.forEach((card,i)=>{
+      const p=Math.min(1,Math.max(0,(elapsed-.65-i*.075)/3.7));
+      const angle=i*Math.PI/4-Math.PI/2+p*p*5.5;
+      const radius=Math.pow(1-p,1.25), x=Math.cos(angle)*rx*radius, y=Math.sin(angle)*ry*radius;
+      card.style.transform=`translate(-50%,-50%) translate(${x}px,${y}px) rotate(${Math.sin(angle)*9+p*35}deg) scale(${1-p*.94})`;
+      card.style.opacity=String(p>.91?(1-p)/.09:1);
+      card.style.zIndex=String(10+Math.round(Math.sin(angle)*3));
+    });
+    stage.querySelector('.portal-counter').textContent=travelling?`${Math.min(5,Math.floor(elapsed)+1).toString().padStart(2,'0')} / 05`:'READY / 05';
+    frame=requestAnimationFrame(draw);
+  }
+  function finish(){
+    attempt++;clearTimeout(timer);cancelAnimationFrame(frame);
+    window.ZRZAudio?.cancelEntry();window.ZRZAudio?.stopEntryFx();
+    travelling=false;stage.dataset.phase='closed';
+    root.classList.remove('portal-active','arrival-pending','is-arriving');
+    if(stage.open){stage.close();if(returnFocus?.isConnected)returnFocus.focus({preventScroll:true});}
+    stage.classList.remove('is-travelling');
+  }
+  function begin(){
+    if(!stage.open||travelling)return;
+    travelling=true;stage.dataset.phase='playing';start=performance.now();
+    stage.classList.add('is-travelling');timer=setTimeout(finish,5400);
+  }
+  async function withSound(){
+    const id=++attempt;
+    stage.querySelector('.portal-help').textContent='正在准备琴声…';
+    const timeout=setTimeout(()=>{if(id===attempt&&!travelling)stage.querySelector('.portal-help').textContent='点「有声进入」开启琴声，也可以静音进入。';},1700);
+    const ok=await window.ZRZAudio?.startEntry();clearTimeout(timeout);
+    if(id!==attempt||!stage.open)return;
+    if(ok)begin();else stage.querySelector('.portal-help').textContent='点击「有声进入」，让琴声与穿梭同时开始。';
+  }
+  function play(isReplay=false){
+    finish();if(!allowed())return;
+    returnFocus=isReplay?replay:document.querySelector('#hero-heading');
+    stage.dataset.phase='waiting';root.classList.add('portal-active');stage.showModal();resize();
+    frame=requestAnimationFrame(draw);
+    stage.querySelector('.portal-help').textContent='准备好，一起穿过我的世界。';
+    if(window.ZRZAudio?.canAutoStart())withSound();
+  }
+  stage.querySelector('.portal-sound').addEventListener('click',withSound);
+  stage.querySelector('.portal-silent').addEventListener('click',()=>{attempt++;window.ZRZAudio?.silence();begin();});
   stage.querySelector('.portal-skip').addEventListener('click',finish);
   stage.addEventListener('cancel',event=>{event.preventDefault();finish();});
   replay?.addEventListener('click',()=>{window.scrollTo({top:0,behavior:'instant'});play(true);});
