@@ -1,0 +1,29 @@
+/* Full-screen travel, with the real page immediately behind it. */
+.portal-entry{position:fixed;inset:0;width:100vw;max-width:none;height:100dvh;max-height:none;margin:0;padding:0;border:0;color:#e7edf0;background:#060c16;overflow:hidden;font-family:var(--sans);isolation:isolate}
+.portal-entry:not([open]){display:none}.portal-entry::backdrop{background:transparent}.portal-active{overflow:hidden}
+.portal-cosmos,.portal-vignette,.portal-depth{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.portal-cosmos{background:radial-gradient(ellipse at 50% 50%,#030915 5%,#183c50 30%,#59402b 50%,#08131f 75%)}
+.portal-vignette{background:linear-gradient(#03091355,transparent 25%,transparent 75%,#030913aa);z-index:1}
+.portal-top,.portal-bottom{position:absolute;left:5%;right:5%;z-index:3;display:flex;align-items:center;justify-content:space-between}
+.portal-top{top:30px;font-size:18px;letter-spacing:.06em}.portal-top small{font-size:11px;color:#b2c0ca;margin-left:12px}
+.portal-skip{background:#08131d85;border:1px solid #c6d8e04d;border-radius:40px;color:#edf7ff;min-height:44px;padding:10px 18px;font:500 13px var(--sans);cursor:pointer;backdrop-filter:blur(15px)}
+.portal-skip:hover,.portal-skip:focus-visible{background:#244658;outline:2px solid #a8d4e8;outline-offset:4px}
+.portal-bottom{bottom:40px;font-size:13px;letter-spacing:.15em;padding-bottom:22px}.portal-counter{font:12px var(--display);color:#bfd2dd}
+.portal-progress{position:absolute;bottom:0;height:1px;left:0;right:0;background:#bdd9e52b}.portal-progress::after{content:'';position:absolute;inset:0;background:#d1d8ce;transform:scaleX(0);transform-origin:left}
+.portal-depth{perspective:650px;transform-style:preserve-3d;z-index:2}
+.portal-ring{position:absolute;width:60vmin;height:60vmin;left:calc(50% - 30vmin);top:calc(50% - 30vmin);border:1px solid #94afbb3b;transform:translateZ(-800px) rotateZ(0);border-radius:18%;opacity:0;box-shadow:0 0 35px #84c5df12,inset 0 0 35px #84c5df12}
+.portal-photo{position:absolute;width:190px;height:245px;left:calc(50% - 95px);top:calc(50% - 138px);border:1px solid #c1d9e184;border-radius:90px 90px 4px 4px;overflow:hidden;box-shadow:0 0 80px #9cccdf25;transform:translateZ(0)}
+.portal-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 40%;filter:none}
+.portal-photo span{position:absolute;bottom:0;left:0;right:0;padding:30px 10px 15px;text-align:center;color:white;background:linear-gradient(transparent,#071625d9);font-size:11px;letter-spacing:.2em}
+.portal-word{position:absolute;color:#dce3e7e0;font-size:clamp(22px,4vw,56px);font-weight:400;letter-spacing:.22em;text-shadow:0 0 40px #a9d9eb33;white-space:nowrap;opacity:0}
+.word-one{left:12%;top:34%}.word-two{right:9%;top:57%}.word-three{left:37%;top:73%;font-size:18px}
+.is-travelling .portal-ring{animation:portalFlight 3.2s cubic-bezier(.55,.02,.8,.55) both}.is-travelling .ring-one{animation-delay:.25s}.is-travelling .ring-two{animation-delay:.85s}.is-travelling .ring-three{animation-delay:1.35s}
+.is-travelling .portal-photo{animation:portraitFlight 2.2s cubic-bezier(.52,.03,.8,.6) both}
+.is-travelling .portal-word{animation:wordFlight 2.8s cubic-bezier(.55,.05,.8,.6) both}.is-travelling .word-two{animation-delay:.35s}.is-travelling .word-three{animation-delay:1s}
+.is-travelling .portal-progress::after{animation:portalProgress 4.6s linear both}.portal-entry.is-travelling{animation:portalExit .7s 3.9s both}
+@keyframes portalFlight{0%{transform:translateZ(-1000px) rotateZ(-20deg);opacity:0}20%{opacity:.65}85%{opacity:.4}100%{transform:translateZ(630px) rotateZ(85deg);opacity:0}}
+@keyframes portraitFlight{0%{opacity:0;transform:translateZ(-120px)}15%,42%{opacity:1}100%{opacity:0;transform:translateZ(580px) translateX(-45px) rotateZ(-12deg)}}
+@keyframes wordFlight{0%{opacity:0;transform:translateZ(-350px)}30%{opacity:.8}100%{opacity:0;transform:translateZ(610px)}}
+@keyframes portalProgress{to{transform:scaleX(1)}}@keyframes portalExit{to{opacity:0;filter:blur(8px)}}
+@media(max-width:600px){.portal-top{top:22px}.portal-top small{display:none}.portal-photo{width:150px;height:205px;left:calc(50% - 75px);top:calc(50% - 115px)}.word-one{left:7%;top:27%;font-size:22px}.word-two{right:5%;top:67%;font-size:22px}.word-three{left:12%;top:79%;font-size:14px}.portal-caption{font-size:10px;letter-spacing:.05em}.portal-bottom{bottom:30px}.portal-ring{width:90vmin;height:90vmin;left:calc(50% - 45vmin);top:calc(50% - 45vmin)}}
+@media(prefers-reduced-motion:reduce){.portal-entry{display:none!important}}

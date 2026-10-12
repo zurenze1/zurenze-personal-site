@@ -1,4 +1,5 @@
 (() => {
+  if (document.body.classList.contains('index')) return;
   const root = document.documentElement;
   // Real page content enters directly on both home and about, on every visit.
   const replay = document.querySelector('.arrival-replay');
