@@ -340,7 +340,8 @@
       const request=++entryRequest;entryPending=true;portalAudioActive=true;entranceEnvelope();const audioStart=performance.now();
       closePlatform();stopTracks();pauseIntroduction();entrySeeking=true;selectTrack('refreshing');backgroundWanted=true;save('ambient-enabled-v27',true);
       try{background.currentTime=70;}catch{}
-      const ok=await startBackground();if(request!==entryRequest)return false;entryPending=false;if(ok){entrySeeking=false;if(portalAudioActive)startTunnelFx((performance.now()-audioStart)/1000);}return ok;
+      if(audioContext)audioContext.resume().then(()=>{if(request===entryRequest&&portalAudioActive)startTunnelFx((performance.now()-audioStart)/1000);}).catch(()=>{});
+      const ok=await startBackground();if(request!==entryRequest)return false;entryPending=false;if(ok)entrySeeking=false;return ok;
     },
     endEntry:()=>{portalAudioActive=false;stopTunnelFx();},
     cancelEntry:()=>{entryRequest++;if(entryPending){backgroundWanted=false;waitingForGesture=false;background.pause();entryPending=false;}},
