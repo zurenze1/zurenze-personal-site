@@ -8,8 +8,9 @@
   const stage = document.createElement('dialog');
   stage.className = 'portal-entry';
   stage.setAttribute('aria-label', '祖仁泽的个人网站，穿梭入场');
+  const themes=['sport','sea','sea','military','work','military','travel','travel'];
   const photos = ['球场时光','海边时光','向海而行','两年军旅','工作之间','训练之外','旅途片刻','山野远行'];
-  stage.innerHTML = `<canvas class="portal-cosmos" aria-hidden="true"></canvas><div class="portal-vignette" aria-hidden="true"></div><div class="portal-top"><span>祖仁泽 <small>／ 个人世界</small></span><button type="button" class="portal-skip">跳过入场 ↗</button></div><div class="portal-depth" aria-hidden="true"><div class="portal-ring ring-one"></div><div class="portal-ring ring-two"></div><div class="portal-ring ring-three"></div>${photos.map((name,i)=>`<div class="portal-photo"><img src="assets/portal/portrait-${i+1}.webp" alt=""><span>${name}</span></div>`).join('')}</div><div class="portal-gate"><p class="portal-overline">EIGHT MOMENTS. ONE JOURNEY.</p><h2>每一段经历，<br>都通向此刻。</h2><p class="portal-help" role="status">准备好，一起穿过我的世界。</p><div class="portal-entry-actions"><button class="portal-sound" type="button" autofocus>有声进入 <span aria-hidden="true">↗</span></button><button class="portal-silent" type="button">静音进入</button></div><small>约 5 秒 · 建议开启声音</small></div><div class="portal-arrival" aria-hidden="true"></div><div class="portal-bottom"><span class="portal-caption">每一程，都算数。</span><span class="portal-counter" aria-hidden="true">READY / 05</span><div class="portal-progress" aria-hidden="true"></div></div>`;
+  stage.innerHTML = `<canvas class="portal-cosmos" aria-hidden="true"></canvas><div class="portal-vignette" aria-hidden="true"></div><div class="portal-top"><span>祖仁泽 <small>／ 个人世界</small></span><button type="button" class="portal-skip">跳过入场 ↗</button></div><div class="portal-depth" aria-hidden="true"><div class="portal-ring ring-one"></div><div class="portal-ring ring-two"></div><div class="portal-ring ring-three"></div>${photos.map((name,i)=>`<div class="portal-photo" data-scene="${themes[i]}"><img src="assets/portal/portrait-${i+1}.webp" alt=""><span>${name}</span></div>`).join('')}</div><div class="portal-arrival" aria-hidden="true"></div><div class="portal-bottom"><span class="portal-caption">每一程，都算数。</span><span class="portal-counter" aria-hidden="true">READY / 05</span><div class="portal-progress" aria-hidden="true"></div></div>`;
   document.body.append(stage);
   const canvas = stage.querySelector('canvas');
   const gl = canvas.getContext('webgl', {alpha:false, antialias:false, powerPreference:'low-power'});
@@ -44,7 +45,7 @@
         col+=vec3(.2,.43,.54)*rings*.15*smoothstep(.04,.2,r);
         float spokes=pow(max(0.,sin(angle*82.+sin(angle*9.)*6.)),95.);
         float streak=pow(max(0.,sin(depth*1.5-travel*5.+angle*7.)),18.);
-        col+=vec3(.4,.67,.78)*spokes*streak*accelerate*.7;
+        col+=vec3(.4,.67,.78)*spokes*streak*accelerate*1.15;
         col*=smoothstep(.025,.15,r)*(1.-smoothstep(.4,1.3,r)*.65);
         col+=vec3(.18,.28,.36)*exp(-r*22.)*smoothstep(3.,4.2,clock);
         gl_FragColor=vec4(col,1.);
@@ -74,7 +75,7 @@
   }
   function finish(){
     attempt++;clearTimeout(timer);cancelAnimationFrame(frame);
-    window.ZRZAudio?.cancelEntry();window.ZRZAudio?.stopEntryFx();
+    window.ZRZAudio?.endEntry();
     travelling=false;stage.dataset.phase='closed';
     root.classList.remove('portal-active','arrival-pending','is-arriving');
     if(stage.open){stage.close();if(returnFocus?.isConnected)returnFocus.focus({preventScroll:true});}
@@ -85,24 +86,13 @@
     travelling=true;stage.dataset.phase='playing';start=performance.now();
     stage.classList.add('is-travelling');timer=setTimeout(finish,5400);
   }
-  async function withSound(){
-    const id=++attempt;
-    stage.querySelector('.portal-help').textContent='正在准备琴声…';
-    const timeout=setTimeout(()=>{if(id===attempt&&!travelling)stage.querySelector('.portal-help').textContent='点「有声进入」开启琴声，也可以静音进入。';},1700);
-    const ok=await window.ZRZAudio?.startEntry();clearTimeout(timeout);
-    if(id!==attempt||!stage.open)return;
-    if(ok)begin();else stage.querySelector('.portal-help').textContent='点击「有声进入」，让琴声与穿梭同时开始。';
-  }
   function play(isReplay=false){
     finish();if(!allowed())return;
     returnFocus=isReplay?replay:document.querySelector('#hero-heading');
-    stage.dataset.phase='waiting';root.classList.add('portal-active');stage.showModal();resize();
-    frame=requestAnimationFrame(draw);
-    stage.querySelector('.portal-help').textContent='准备好，一起穿过我的世界。';
-    if(window.ZRZAudio?.canAutoStart())withSound();
+    root.classList.add('portal-active');stage.showModal();resize();
+    begin();frame=requestAnimationFrame(draw);
+    if(window.ZRZAudio?.canAutoStart())window.ZRZAudio.startEntry();
   }
-  stage.querySelector('.portal-sound').addEventListener('click',withSound);
-  stage.querySelector('.portal-silent').addEventListener('click',()=>{attempt++;window.ZRZAudio?.silence();begin();});
   stage.querySelector('.portal-skip').addEventListener('click',finish);
   stage.addEventListener('cancel',event=>{event.preventDefault();finish();});
   replay?.addEventListener('click',()=>{window.scrollTo({top:0,behavior:'instant'});play(true);});
@@ -111,5 +101,5 @@
   document.addEventListener('visibilitychange',()=>{if(document.hidden)finish();});window.addEventListener('pagehide',finish);window.addEventListener('resize',resize);
   canvas.addEventListener('webglcontextlost',finish);
   sync();root.classList.remove('arrival-pending');
-  if(!location.hash&&scrollY<80)play();
+  if(!location.hash&&scrollY<80&&!new URLSearchParams(location.search).has('preview'))play();
 })();

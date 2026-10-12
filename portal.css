@@ -36,3 +36,8 @@
 .is-travelling .portal-gate{opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}.is-travelling .portal-ring{animation-duration:4.2s}.is-travelling .portal-progress::after{animation-duration:5.4s}.portal-entry.is-travelling{animation:portalExit .8s 4.6s both}
 .portal-arrival{position:absolute;inset:0;pointer-events:none;z-index:25;background:radial-gradient(ellipse,#c4e3ff55,transparent 65%);opacity:0}.is-travelling .portal-arrival{animation:portalLand 1s 4.25s both}@keyframes portalLand{35%{opacity:.85;transform:scale(1.2)}100%{opacity:0;transform:scale(2)}}
 @media(max-width:650px){.portal-photo{width:75px;height:101px;border-radius:3px;left:50%;top:50%}.portal-photo span{font-size:8px;padding:20px 3px 6px}.portal-gate{width:62vw}.portal-gate h2{font-size:23px}.portal-overline{font-size:8px;letter-spacing:.1em}.portal-gate .portal-help{font-size:10px}.portal-entry-actions{gap:7px}.portal-entry-actions button{padding:10px;font-size:12px}.portal-sound span{margin-left:4px}.portal-top{font-size:15px}}
+/* Light belongs to the photographic frame; faces keep their original color. */
+.portal-photo[data-scene=military]{border-color:#adc4a9;box-shadow:0 0 26px #8da87d44,0 14px 35px #0008}
+.portal-photo[data-scene=travel]{border-color:#deaf93;box-shadow:0 0 28px #c7724d44,0 14px 35px #0008}
+.portal-photo[data-scene=sea],.portal-photo[data-scene=sport]{border-color:#a5d9f6;box-shadow:0 0 28px #4cabdb44,0 14px 35px #0008}
+.portal-photo[data-scene=work]{border-color:#d4bf9c;box-shadow:0 0 24px #c29d5d44,0 14px 35px #0008}

@@ -20,7 +20,10 @@
   let introduction = null;
   let introductionPlaying = false;
   let pageLeaving = false;
-  let audioContext, gain;
+  let audioContext, gain, envelope;
+  let fadeFrame=0, fadeOrigin=0, portalAudioActive=false;
+  let musicMix=Number(read('ambient-mix-v28','1'));
+  if(!Number.isFinite(musicMix))musicMix=1;
   let entrySeeking = false;
   let fxNodes = [];
   let entryRequest=0, entryPending=false;
@@ -34,18 +37,34 @@
     if (Context) {
       audioContext = new Context();
       gain = audioContext.createGain();
-      audioContext.createMediaElementSource(background).connect(gain);
+      envelope=audioContext.createGain();
+      audioContext.createMediaElementSource(background).connect(envelope);envelope.connect(gain);
       gain.connect(audioContext.destination);
     }
-  } catch { audioContext = null; gain = null; }
+  } catch { audioContext = null; gain = null; envelope = null; }
   function setVolume() {
     const level = Number(volume.value) / 100;
     if (gain) gain.gain.setValueAtTime(level, audioContext.currentTime);
-    else background.volume = level;
+    else background.volume = Math.min(1,level*musicMix);
     save('ambient-volume-v27', volume.value);
     volume.setAttribute('aria-valuetext', `${volume.value}%`);
   }
-  setVolume();
+  function applyMix(){
+    if(envelope)envelope.gain.setValueAtTime(musicMix,audioContext.currentTime);
+    else background.volume=Math.min(1,Number(volume.value)/100*musicMix);
+    background.dataset.mix=musicMix.toFixed(3);save('ambient-mix-v28',musicMix);
+  }
+  function entranceEnvelope(){
+    cancelAnimationFrame(fadeFrame);fadeOrigin=performance.now();
+    function step(now){
+      const t=(now-fadeOrigin)/1000,p=Math.max(0,Math.min(1,(t-3)/7));
+      musicMix=1.6*Math.pow(.55/1.6,p*p*(3-2*p));applyMix();
+      background.dataset.soundStage=t<3?'climax':t<10?'fading':'ambient';
+      if(t<10)fadeFrame=requestAnimationFrame(step);
+    }
+    step(fadeOrigin);
+  }
+  setVolume();applyMix();
   function renderBackground() {
     if (selection === 'qingkong') {
       toggle.setAttribute('aria-pressed', String(Boolean(platformFrame)));
@@ -87,7 +106,7 @@
   background.addEventListener('play', renderBackground);
   background.addEventListener('pause', renderBackground);
   background.addEventListener('error', () => { waitingForGesture = false; label.textContent = '轻音乐 · 暂时无法加载'; });
-  volume.addEventListener('input', setVolume);
+  volume.addEventListener('input',()=>{cancelAnimationFrame(fadeFrame);musicMix=1;applyMix();setVolume();});
   document.addEventListener('click', event => {
     if (waitingForGesture && backgroundWanted && !activeTrack && !event.target.closest('.sound-dock, .music-section, .intro-video-section, .portal-entry')) startBackground();
   });
@@ -143,7 +162,7 @@
   document.addEventListener('play', event => {
     if (event.target.tagName !== 'VIDEO') return;
     closePlatform();
-    stopTunnelFx();
+    stopTunnelFx();cancelAnimationFrame(fadeFrame);musicMix=.55;applyMix();
     introduction = event.target;
     introductionPlaying = true;
     waitingForGesture = false;
@@ -275,34 +294,43 @@
   function stopTunnelFx(){
     fxNodes.forEach(node=>{try{node.stop();}catch{}try{node.disconnect();}catch{}});fxNodes=[];
   }
-  function startTunnelFx(){
+  function startTunnelFx(elapsed=0){
     stopTunnelFx();if(!audioContext||audioContext.state!=='running')return;
+    if(elapsed>1.2)return;
     const ctx=audioContext,t=ctx.currentTime,level=Number(volume.value)/100;
-    const bus=ctx.createGain();bus.gain.value=level*.65;bus.connect(ctx.destination);
+    const bus=ctx.createGain();bus.gain.value=level*.95;
+    const limiter=ctx.createDynamicsCompressor();limiter.threshold.value=-9;limiter.knee.value=12;limiter.ratio.value=8;limiter.attack.value=.003;limiter.release.value=.2;bus.connect(limiter);limiter.connect(ctx.destination);fxNodes.push(limiter);
     const noise=ctx.createBuffer(2,Math.ceil(ctx.sampleRate*5.4),ctx.sampleRate);
     for(let c=0;c<2;c++){const data=noise.getChannelData(c);let last=0;for(let i=0;i<data.length;i++){last=(last+(Math.random()*2-1)*.08)/1.02;data[i]=last*2.8;}}
     const source=ctx.createBufferSource();source.buffer=noise;
     const filter=ctx.createBiquadFilter();filter.type='bandpass';filter.Q.value=.65;filter.frequency.setValueAtTime(150,t);filter.frequency.exponentialRampToValueAtTime(2200,t+4.1);filter.frequency.exponentialRampToValueAtTime(180,t+5.2);
-    const swell=ctx.createGain();swell.gain.setValueAtTime(0,t);swell.gain.linearRampToValueAtTime(.12,t+.45);swell.gain.exponentialRampToValueAtTime(.6,t+4.1);swell.gain.exponentialRampToValueAtTime(.001,t+5.3);
+    const swell=ctx.createGain();swell.gain.setValueAtTime(0,t);swell.gain.linearRampToValueAtTime(.12,t+.45);swell.gain.exponentialRampToValueAtTime(.95,t+4.1);swell.gain.exponentialRampToValueAtTime(.001,t+5.3);
     const pan=ctx.createStereoPanner?.();source.connect(filter);filter.connect(swell);if(pan){swell.connect(pan);pan.connect(bus);pan.pan.setValueAtTime(-.6,t);pan.pan.linearRampToValueAtTime(.6,t+2.3);pan.pan.linearRampToValueAtTime(0,t+4.4);}else swell.connect(bus);source.start(t);source.stop(t+5.4);
     fxNodes.push(source,bus,filter,swell);if(pan)fxNodes.push(pan);
     // The arrival impact is a synthesized falling low tone, never a sampled film effect.
-    [0,4.35].forEach((offset,index)=>{const osc=ctx.createOscillator(),g=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(index?110:80,t+offset);osc.frequency.exponentialRampToValueAtTime(38,t+offset+.65);g.gain.setValueAtTime(0,t+offset);g.gain.linearRampToValueAtTime(index ? .48 : .26,t+offset+.015);g.gain.exponentialRampToValueAtTime(.001,t+offset+.9);osc.connect(g);g.connect(bus);osc.start(t+offset);osc.stop(t+offset+1);fxNodes.push(osc,g);});
+    [0,4.35].forEach((offset,index)=>{const osc=ctx.createOscillator(),g=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(index?110:80,t+offset);osc.frequency.exponentialRampToValueAtTime(38,t+offset+.65);g.gain.setValueAtTime(0,t+offset);g.gain.linearRampToValueAtTime(index ? .85 : .65,t+offset+.015);g.gain.exponentialRampToValueAtTime(.001,t+offset+.9);osc.connect(g);g.connect(bus);osc.start(t+offset);osc.stop(t+offset+1);fxNodes.push(osc,g);});
+    [0.03,4.28].forEach((offset,index)=>{
+      const burst=ctx.createBufferSource();burst.buffer=noise;
+      const low=ctx.createBiquadFilter();low.type='lowpass';low.frequency.setValueAtTime(6500,t+offset);low.frequency.exponentialRampToValueAtTime(160,t+offset+.85);
+      const amp=ctx.createGain();amp.gain.setValueAtTime(0,t+offset);amp.gain.linearRampToValueAtTime(index?1.8:1.3,t+offset+.018);amp.gain.exponentialRampToValueAtTime(.001,t+offset+1.05);
+      burst.connect(low);low.connect(amp);amp.connect(bus);burst.start(t+offset);burst.stop(t+offset+1.08);fxNodes.push(burst,low,amp);
+    });
     setTimeout(()=>{if(fxNodes.includes(bus))stopTunnelFx();},5600);
   }
   window.ZRZAudio={
     canAutoStart:()=>backgroundWanted,
     startEntry:async()=>{
-      const request=++entryRequest;entryPending=true;
+      const request=++entryRequest;entryPending=true;portalAudioActive=true;entranceEnvelope();const audioStart=performance.now();
       closePlatform();stopTracks();pauseIntroduction();entrySeeking=true;selectTrack('refreshing');backgroundWanted=true;save('ambient-enabled-v27',true);
       try{background.currentTime=70;}catch{}
-      const ok=await startBackground();if(request!==entryRequest)return false;entryPending=false;if(ok){entrySeeking=false;startTunnelFx();}return ok;
+      const ok=await startBackground();if(request!==entryRequest)return false;entryPending=false;if(ok){entrySeeking=false;if(portalAudioActive)startTunnelFx((performance.now()-audioStart)/1000);}return ok;
     },
+    endEntry:()=>{portalAudioActive=false;stopTunnelFx();},
     cancelEntry:()=>{entryRequest++;if(entryPending){backgroundWanted=false;waitingForGesture=false;background.pause();entryPending=false;}},
     stopEntryFx:stopTunnelFx,
     silence:()=>{entryRequest++;entryPending=false;stopTunnelFx();backgroundWanted=false;waitingForGesture=false;save('ambient-enabled-v27',false);background.pause();renderBackground();}
   };
   selectTrack(['canon','qingkong','refreshing'].includes(selection)?selection:'refreshing');
   renderBackground();
-  if(!document.body.classList.contains('index') || location.hash || matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.motion==='off') startBackground();
+  if(!new URLSearchParams(location.search).has('preview') && (!document.body.classList.contains('index') || location.hash || matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.motion==='off')) startBackground();
 })();
