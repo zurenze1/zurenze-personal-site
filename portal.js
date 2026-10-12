@@ -86,9 +86,9 @@
     stage.querySelector('.portal-counter').textContent=travelling?`${Math.min(5,Math.floor(elapsed)+1).toString().padStart(2,'0')} / 05`:'READY / 05';
     frame=requestAnimationFrame(draw);
   }
-  function finish(){
+  function finish(completed=false){
     attempt++;clearTimeout(timer);cancelAnimationFrame(frame);
-    window.ZRZAudio?.endEntry();
+    window.ZRZAudio?.endEntry({land:completed===true&&travelling});
     travelling=false;stage.dataset.phase='closed';
     root.classList.remove('portal-active','arrival-pending','is-arriving');
     if(stage.open){stage.close();if(returnFocus?.isConnected)returnFocus.focus({preventScroll:true});}
@@ -97,7 +97,7 @@
   function begin(){
     if(!stage.open||travelling)return;
     travelling=true;stage.dataset.phase='playing';start=performance.now();
-    stage.classList.add('is-travelling');timer=setTimeout(finish,5400);
+    stage.classList.add('is-travelling');timer=setTimeout(()=>finish(true),5400);
   }
   function play(isReplay=false){
     finish();if(!allowed())return;

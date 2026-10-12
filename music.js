@@ -348,6 +348,24 @@
     tone(784,3.87,.3,1.43,.10,.32);
     setTimeout(()=>{if(fxNodes.includes(bus))stopTunnelFx();},5600);
   }
+  function playArrivalAccent(){
+    if(!audioContext||audioContext.state!=='running'||!backgroundWanted||document.hidden)return;
+    const ctx=audioContext,t=ctx.currentTime+.01,bus=ctx.createGain(),limiter=ctx.createDynamicsCompressor();
+    bus.gain.value=Number(volume.value)/100;
+    limiter.threshold.value=-9;limiter.knee.value=15;limiter.ratio.value=6;limiter.attack.value=.006;limiter.release.value=.24;
+    bus.connect(limiter);limiter.connect(ctx.destination);fxNodes.push(bus,limiter);
+    // Triggered by the actual reveal, not a guessed timestamp: a rounded "dong" and soft stereo tail.
+    const delay=ctx.createDelay(.5),tail=ctx.createGain(),pan=ctx.createStereoPanner();
+    delay.delayTime.value=.16;tail.gain.value=.22;pan.pan.value=.28;
+    delay.connect(tail);tail.connect(pan);pan.connect(bus);fxNodes.push(delay,tail,pan);
+    [[130.8,65.4,.74,1.65,'sine'],[261.6,130.8,.19,1.35,'sine'],[523.25,523.25,.065,1.1,'sine']].forEach(([from,to,level,duration,type])=>{
+      const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type=type;
+      osc.frequency.setValueAtTime(from,t);osc.frequency.exponentialRampToValueAtTime(to,t+.42);
+      gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(level,t+.09);gain.gain.exponentialRampToValueAtTime(.0001,t+duration);
+      osc.connect(gain);gain.connect(bus);gain.connect(delay);osc.start(t);osc.stop(t+duration);fxNodes.push(osc,gain);
+    });
+    setTimeout(()=>{if(fxNodes.includes(bus))stopTunnelFx();},1900);
+  }
   window.ZRZAudio={
     canAutoStart:()=>backgroundWanted||autoStopped,
     startEntry:async()=>{
@@ -357,7 +375,7 @@
       if(audioContext)audioContext.resume().then(()=>{if(request===entryRequest&&portalAudioActive)startTunnelFx((performance.now()-audioStart)/1000);}).catch(()=>{});
       const ok=await startBackground();if(request!==entryRequest)return false;entryPending=false;if(ok)entrySeeking=false;return ok;
     },
-    endEntry:()=>{portalAudioActive=false;stopTunnelFx();},
+    endEntry:({land=false}={})=>{const wasActive=portalAudioActive;portalAudioActive=false;stopTunnelFx();if(land&&wasActive)playArrivalAccent();},
     cancelEntry:()=>{entryRequest++;if(entryPending){backgroundWanted=false;waitingForGesture=false;background.pause();entryPending=false;}},
     stopEntryFx:stopTunnelFx,
     silence:()=>{entryRequest++;entryPending=false;stopTunnelFx();backgroundWanted=false;waitingForGesture=false;save('ambient-enabled-v27',false);background.pause();renderBackground();}
