@@ -1,14 +1,14 @@
 (() => {
   const root = document.documentElement;
-  // The homepage itself enters in layers; no full-screen gate or video download.
+  // Real page content enters directly on both home and about, on every visit.
   const replay = document.querySelector('.arrival-replay');
-  const hero = document.querySelector('.home-hero');
+  const hero = document.querySelector('.entry-scene');
   if (!replay || !hero) return;
   let timer;
   let skip;
+  let waitingForPhoto = true;
   const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)');
   const allowed = () => root.dataset.motion === 'on' && !prefersReduced.matches;
-  const storageKey = 'zrz-arrival-cinematic-v23';
 
   document.querySelectorAll('.arrival-line').forEach(line => {
     const words = [...line.textContent];
@@ -22,6 +22,7 @@
   });
 
   function finish() {
+    waitingForPhoto = false;
     clearTimeout(timer);
     const returnFocus = skip === document.activeElement;
     skip?.remove();
@@ -41,7 +42,7 @@
     skip.textContent = '跳过入场 ↗';
     skip.addEventListener('click', finish);
     hero.append(skip);
-    timer = setTimeout(finish, 2200);
+    timer = setTimeout(finish, 3200);
   }
   function sync() {
     replay.hidden = !allowed();
@@ -67,10 +68,13 @@
   document.addEventListener('visibilitychange', () => { if(document.hidden) finish(); });
   window.addEventListener('pagehide', finish);
   sync();
-  let seen = false;
-  try { seen = sessionStorage.getItem(storageKey) === 'seen'; } catch {}
-  if (!seen && !location.hash && allowed()) {
-    try { sessionStorage.setItem(storageKey,'seen'); } catch {}
-    play();
+  if (!location.hash && allowed()) {
+    // Let a cached or quickly loaded photo appear before the text sequence.
+    const photo = hero.querySelector('.entry-portrait img');
+    const ready = photo?.decode?.().catch(() => {});
+    Promise.race([ready, new Promise(resolve => setTimeout(resolve, 900))]).then(() => {
+      if (!waitingForPhoto) return;
+      if (scrollY < 80 && !document.hidden) play(); else finish();
+    });
   } else finish();
 })();
