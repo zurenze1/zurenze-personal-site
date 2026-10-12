@@ -132,7 +132,12 @@
   });
   window.addEventListener('pageshow', event => {
     pageLeaving = false;
-    if (event.persisted) startBackground();
+    if(event.persisted){
+      backgroundWanted=read('ambient-enabled-v27','true')==='true';autoStopped=read('ambient-entry-stopped-v30','false')==='true';
+      const deadline=Number(read('ambient-entry-until-v30','0'));
+      if(deadline>0&&deadline<=Date.now()){stopEntryMusic();return;}
+      if(deadline>0)armEntryLimit(deadline);startBackground();renderBackground();
+    }
   });
 
   const player = document.querySelector('.music-player');
@@ -346,5 +351,8 @@
   const entryDeadline=Number(read('ambient-entry-until-v30','0'));
   if(entryDeadline>0){if(entryDeadline<=Date.now())stopEntryMusic();else armEntryLimit(entryDeadline);}
   renderBackground();
-  if(!new URLSearchParams(location.search).has('preview') && (!document.body.classList.contains('index') || location.hash || matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.motion==='off')) startBackground();
+  if(!new URLSearchParams(location.search).has('preview') && (!document.body.classList.contains('index') || location.hash || matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.motion==='off')) {
+    if(document.body.classList.contains('index')&&backgroundWanted&&entryDeadline===0)entranceEnvelope();
+    startBackground();
+  }
 })();
