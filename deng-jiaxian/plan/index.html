@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>邓稼先｜逐秒制作预排</title>
+  <meta name="description" content="依据冻结稿v3的4分42秒制作预排：61镜头、17旁白分段、素材与声音参考。以本人确认的最终旁白逐句校准。">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+ <header class="top"><a href="../../">ZU · 人物作品</a><nav aria-label="页面导航"><a href="#timeline">镜头表</a><a href="#voice">本人声音</a><a href="#assets">素材</a></nav></header>
+ <main>
+  <section class="hero">
+   <p class="eyebrow">2026.10.12 / 制作计划 · v1</p>
+   <div class="hero-grid"><div><h1>邓稼先<br><span>逐秒制作预排</span></h1><p class="lead">一段文案，对应一段声音、一组画面和一次情绪推进。</p></div><div class="metric"><span id="total">04:42</span><p><b id="shotsCount">61</b> 个镜头 · <b id="voCount">17</b> 个旁白生成段</p><small>计划时长，不是已经完成的成片</small></div></div>
+   <div class="notice"><strong>预排，时间尚未锁定。</strong><span>以生成且祖仁泽确认的最终旁白WAV逐句校准。情绪采样短句的时长不充当全片时钟。</span></div>
+   <div class="quick"><span>稿件v3已冻结</span><span>已选择本人音色路线，参考待确认</span><span>4段视频＋3张照片已取得</span><span>末句后留3秒音乐尾画</span></div>
+  </section>
+  <section class="chapters"><div class="section-head"><h2>故事怎么往前走</h2><p>点章节，直接看该段镜头。</p></div><div id="chapterRail" class="chapter-rail"></div></section>
+  <section id="timeline">
+   <div class="section-head"><h2>逐镜头执行表</h2><p>文案、情绪、源片位置、字幕与配乐都在同一行；展开看执行细节。</p></div>
+   <div class="priority-guide"><strong>制作准备先后</strong><p>这表示先做什么，每句旁白都保留。素材是否已取得、是否有发布许可，另看素材状态。</p><div id="priorityLegend"></div><details><summary>下一步按什么顺序做</summary><ol id="nextSteps"></ol></details></div>
+   <div class="locator"><label for="position">定位预排时间</label><input id="position" type="range" min="0" max="281" value="0"><output id="positionLabel">00:00</output><button id="jump">查看对应镜头</button></div>
+   <div class="toolbar"><label class="search-label">查文案或情绪<input id="search" type="search" placeholder="例如：天安门、九轮、悲伤"></label><label>声音<select id="voiceFilter" aria-label="声音"><option value="all">全部声音</option><option value="own">本人旁白</option><option value="insert">两处插入原声</option><option value="tail">纯音乐尾画</option></select></label><label>素材状态<select id="statusFilter" aria-label="素材状态"><option value="all">全部镜头</option><option value="acquired">有已取得素材</option><option value="pending">有素材待办</option></select></label><button id="expand">展开全部</button></div>
+   <p id="resultCount" class="result-count" aria-live="polite"></p><div id="shotList" class="shot-list"></div>
+  </section>
+  <section id="voice">
+   <div class="section-head"><h2>用你的声音</h2><p>补情绪参考后分段生成，不要求你把整篇重新念一遍。</p></div>
+   <div class="voice-status"><strong>已确认采用本人音色路线，最终音色待短试听确认。</strong><p>开心、兴奋、愤怒三份原始样本已收到，含插话或口误。先筛选纯本人干净片段并听辨确认，再生成短试听；确认自然度与相似度后，才进入完整旁白。悲伤、激动、有力量等状态仍待补充干净参考。</p><p>情绪列是选参考与试听的目标；当前实现不能保证通过一个参数直接指定情绪或读速。旧原创合成声不充作本人原声。全片最终旁白尚未生成。</p></div>
+   <h3>六种状态的采样参考</h3><p class="muted">负责人提供的生活练习短句，不是邓稼先台词，不进入人物正文。每段读两遍、每遍约10—15秒；段间留2秒，安静环境、固定距离、不开音乐。</p><div id="samples" class="sample-grid"></div>
+   <h3>旁白生成分段</h3><p class="muted">以下是生成用的文稿分段与预计占时，不是要求你补录全稿。两处演员／采访原声另用既有片段，不进入本人声音生成。</p><div id="generation" class="generation-list"></div>
+  </section>
+  <section id="assets">
+   <div class="section-head"><h2>素材从哪里来</h2><p>已有文件与实际可发布是两件不同的事。照片和片段原件不在这个页面上传。</p></div>
+   <p class="notice small">CAS三张真人照片已取得，页面要求的学部工作局发布许可尚未取得。C2是央视氢弹解说段的相关资料画面，底片身份未独立核验。病重改报告电影同场景仍待取得，以自制图解替代。</p>
+   <div id="assetList" class="asset-list"></div>
+  </section>
+  <section class="production-notes"><h2>进入制作前的几个落点</h2><ul><li>问句后停约1秒，再转到“先生，我们记得”；从这里让宏伟配乐渐起，人声结束后才达到峰值。</li><li>真人照片、历史节目资料、影视演绎和自制示意各自说明性质。保留原比例、完整人脸与可读字幕。</li><li>没取得的源片不填精确裁切秒数。嘴角血镜头未核同一原片，剧中手稿／眼镜也不当作真实遗物。</li><li>配乐只规划变化，具体文件尚待选定；本轮没有生成声音、训练模型或渲染视频。</li></ul></section>
+  <details class="provenance"><summary>版本与数据依据</summary><p>工作源来自自媒体3唯一执行计划JSON；CSV、Markdown和本页从同一数据衍生。</p><p>冻结稿：邓稼先_逐字稿_v3.md</p><p class="hash" id="scriptHash"></p><p id="pace"></p><a href="./plan.json">查看公开计划数据 →</a><p class="muted">仅文字计划与公开来源链接；无本人音频、私密声音清单、照片原件或第三方整片。</p></details>
+ </main>
+ <footer>ZU / 让敬佩落到可以执行的工作里。<span>时间为预排，最终由本人确认的声音校准。</span></footer>
+ <noscript><p class="notice">这个执行表需要JavaScript显示。你也可以直接打开<a href="./plan.json">文字计划数据</a>。</p></noscript>
+</body></html>
