@@ -23,3 +23,10 @@
 @media(max-width:360px){.index .poster-hero{min-height:905px}.poster-copy{padding-left:20px;padding-right:20px}.poster-visual img{object-position:66% top}.poster-bottom{left:20px;right:20px}.index .poster-hero h1{font-size:43px}.poster-actions a{font-size:12px;gap:8px;padding:13px 10px}}
 @media(prefers-reduced-motion:reduce){.poster-light,.poster-scroll span{animation:none}.poster-visual img{transform:none!important;transition:none}}
 [data-motion=off] .poster-light,[data-motion=off] .poster-scroll span{animation:none}[data-motion=off] .poster-visual img{transform:none!important}
+
+/* Original travel photograph; only layout, crop and surrounding gradients change. */
+.poster-visual{left:20%;width:80%}.poster-visual img{object-fit:cover;object-position:63% 30%}
+.poster-hero::after{background:linear-gradient(90deg,#080f1e 0%,#080f1efa 23%,#080f1eb8 40%,transparent 65%),linear-gradient(180deg,#080f1e55,transparent 24%),linear-gradient(0deg,#080f1e,transparent 30%)}
+.poster-light{background:radial-gradient(ellipse at 76% 25%,#1b68a812,transparent 43%)}
+@media(min-width:1800px){.poster-visual img{object-fit:cover;object-position:63% 30%}}
+@media(max-width:700px){.poster-visual{left:0;width:100%;height:675px}.poster-visual img{object-position:64% 24%}.poster-hero::after{background:linear-gradient(180deg,#080f1e66,transparent 20%,transparent 42%,#080f1e99 64%,#080f1e 81%)}.poster-kicker{color:#d4e0e8}.poster-visual figcaption{color:#d4e0e8;text-shadow:0 1px 5px #000}}
