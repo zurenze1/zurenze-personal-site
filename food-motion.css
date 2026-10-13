@@ -13,3 +13,12 @@
 [data-motion=off] .food-motion img,[data-motion=off] .food-motion::after,[data-motion=off] .food-steam i{animation:none;will-change:auto}[data-motion=off] .food-steam{display:none}
 @media(prefers-reduced-motion:reduce){.food-motion img,.food-motion::after,.food-steam i{animation:none!important;will-change:auto}.food-steam{display:none}}
 @media(max-width:760px){.food-controls{align-items:start;gap:12px}.food-controls p{max-width:52%;font-size:13px}.food-motion-toggle{font-size:12px;padding:9px 11px}.food-image-caption{font-size:10px;padding-inline:8px}.food-visual{margin-bottom:17px}.food-viewer{padding:14px}.food-viewer h3{font-size:21px}}
+/* Keep each photograph complete, including the photographer's watermark. */
+.food-visual{background:radial-gradient(ellipse at 50% 30%,#344037,#101e19);margin-bottom:8px}
+.food-visual img{object-fit:contain;padding:10px 12px 34px;box-sizing:border-box;animation-name:foodPhotoDrift}
+.food-visual img[src*="guojuan-photo"],.food-visual img[src*="kaoyu-photo"],.food-visual img[src*="sour-beef"]{object-fit:cover;padding:0 0 28px;object-position:50% 44%}
+.food-image-caption{padding-top:6px;background:#102018d9}
+.food-source{display:block;width:fit-content;max-width:100%;font:11px/1.7 var(--sans);color:var(--muted);margin:0 0 18px;text-decoration:underline;text-underline-offset:4px}
+.food-source:hover{color:var(--ink)}
+.food-viewer .food-source{color:#dce8cf;margin-bottom:0}
+@keyframes foodPhotoDrift{from{transform:translate(-2px,1px)}to{transform:translate(2px,-3px)}}

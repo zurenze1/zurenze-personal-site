@@ -1,9 +1,8 @@
 (() => {
   const root = document.documentElement;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let saved;
-  try { saved = localStorage.getItem('zrz-motion'); } catch {}
-  let motion = saved ? saved === 'on' : !reduced.matches;
+  // A fresh page opens with motion; the manual switch only controls this visit.
+  let motion = !reduced.matches;
   const setMotion = enabled => {
     motion = enabled;
     root.dataset.motion = enabled ? 'on' : 'off';
@@ -20,7 +19,6 @@
   setMotion(motion);
   document.querySelectorAll('.motion-switch').forEach(button => button.addEventListener('click', () => {
     setMotion(!motion);
-    try { localStorage.setItem('zrz-motion', motion ? 'on' : 'off'); } catch {}
   }));
   reduced.addEventListener('change', event => { if (event.matches) setMotion(false); });
   tools.querySelector('.back-to-top').addEventListener('click', () => {

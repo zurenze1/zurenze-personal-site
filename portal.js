@@ -107,6 +107,10 @@
     if(window.ZRZAudio?.canAutoStart())window.ZRZAudio.startEntry();
   }
   stage.querySelector('.portal-skip').addEventListener('click',finish);
+  // Sound lands at the first visual reveal, not 800 ms later when the dialog closes.
+  stage.addEventListener('animationstart',event=>{
+    if(event.target===stage&&event.animationName==='portalExit'&&travelling)window.ZRZAudio?.arriveEntry();
+  });
   stage.addEventListener('cancel',event=>{event.preventDefault();finish();});
   replay?.addEventListener('click',()=>{window.scrollTo({top:0,behavior:'instant'});play(true);});
   function sync(){if(replay)replay.hidden=!allowed();if(!allowed())finish();}

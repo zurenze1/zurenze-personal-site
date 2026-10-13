@@ -1,0 +1,57 @@
+[
+  {
+    "file": "assets/hometown/food/guojuan-photo.webp",
+    "dish": "安顺裹卷",
+    "type": "photograph",
+    "source_page": "https://www.sohu.com/a/240771138_100215527",
+    "source_image": "https://5b0988e595225.cdn.sohucs.com/images/20180712/6a5d4d9a8d8245d78f9aa3afe6f2a343.jpeg",
+    "credit": "不好先森 · 搜狐号",
+    "license": "Not stated by source; no open license or separate permission verified",
+    "changes": "WebP compression and proportional resize only; original watermark retained",
+    "checked": "2026-10-13"
+  },
+  {
+    "file": "assets/hometown/food/suanfen-photo.webp",
+    "dish": "贵阳酸粉",
+    "type": "photograph",
+    "source_page": "https://www.yp.gov.cn/contents/2023/07/20/receive-3a1ab5b9-fb5b-4d02-8c33-c4c6f103c082.html",
+    "source_image": "https://thirdparty-lib.oss-cn-hangzhou.aliyuncs.com/mrp-media-news-pusher/570ee8f6-cd72-418a-bc1f-c16ed68e874d/articles/3a1ab5b9-fb5b-4d02-8c33-c4c6f103c082/20230720102505-SJBB0K-20230720102223-Ho65xX-.jpg",
+    "credit": "贵州日报天眼新闻",
+    "license": "Not stated by source; no open license or separate permission verified",
+    "changes": "WebP compression and proportional resize only; original watermark retained",
+    "checked": "2026-10-13"
+  },
+  {
+    "file": "assets/hometown/food/laziji-photo.webp",
+    "dish": "贵州辣子鸡",
+    "type": "photograph",
+    "source_page": "https://www.yp.gov.cn/contents/2023/07/20/receive-3a1ab5b9-fb5b-4d02-8c33-c4c6f103c082.html",
+    "source_image": "https://thirdparty-lib.oss-cn-hangzhou.aliyuncs.com/mrp-media-news-pusher/570ee8f6-cd72-418a-bc1f-c16ed68e874d/articles/3a1ab5b9-fb5b-4d02-8c33-c4c6f103c082/20230720102505-TasPN9-20230720102223-DH3C7q-.jpg",
+    "credit": "贵州日报天眼新闻",
+    "license": "Not stated by source; no open license or separate permission verified",
+    "changes": "WebP compression and proportional resize only; original watermark retained",
+    "checked": "2026-10-13"
+  },
+  {
+    "file": "assets/hometown/food/yangyuba-photo.webp",
+    "dish": "洋芋粑",
+    "type": "photograph",
+    "source_page": "https://www.yp.gov.cn/contents/2023/07/20/receive-3a1ab5b9-fb5b-4d02-8c33-c4c6f103c082.html",
+    "source_image": "https://thirdparty-lib.oss-cn-hangzhou.aliyuncs.com/mrp-media-news-pusher/570ee8f6-cd72-418a-bc1f-c16ed68e874d/articles/3a1ab5b9-fb5b-4d02-8c33-c4c6f103c082/20230720102505-lTjMKm-20230720102223-2Zr3Oh-.jpg",
+    "credit": "左春林 · 贵州日报天眼新闻",
+    "license": "Not stated by source; no open license or separate permission verified",
+    "changes": "WebP compression and proportional resize only; original watermark retained",
+    "checked": "2026-10-13"
+  },
+  {
+    "file": "assets/hometown/food/kaoyu-photo.webp",
+    "dish": "留一手烤鱼",
+    "type": "photograph",
+    "source_page": "https://www.sohu.com/a/299455794_100261609",
+    "source_image": "https://5b0988e595225.cdn.sohucs.com/images/20190306/55ff7e661e074155b9a33443f47bb224.jpeg",
+    "credit": "梓艺Anne · 美食游天下转载",
+    "license": "Not stated by source; no open license or separate permission verified",
+    "changes": "WebP compression and proportional resize only; original watermark retained",
+    "checked": "2026-10-13"
+  }
+]

@@ -27,11 +27,12 @@
   if(!Number.isFinite(musicMix))musicMix=1;
   let entrySeeking = false;
   let fxNodes = [];
-  let entryRequest=0, entryPending=false;
+  let entryRequest=0, entryPending=false, entryLanded=false;
   const catalogue = {refreshing:{name:'晴朗钢琴',src:'assets/audio/piano-refreshing-peritune.mp3',start:70},canon:{name:'卡农',src:'assets/audio/canon-lee-galloway.mp3',start:0}};
-  const savedVolume = Number(read('ambient-volume-v27', '45'));
+  const freshEntrance = document.body.classList.contains('index') && !location.hash;
+  const savedVolume = freshEntrance ? 70 : Number(read('ambient-volume-v27', '70'));
   volume.max = '100';
-  volume.value = Number.isFinite(savedVolume) ? Math.max(0, Math.min(100, savedVolume)) : 45;
+  volume.value = Number.isFinite(savedVolume) ? Math.max(0, Math.min(100, savedVolume)) : 70;
   // GainNode keeps the background quiet on mobile browsers that ignore audio.volume.
   try {
     const Context = window.AudioContext || window.webkitAudioContext;
@@ -315,13 +316,13 @@
     stopTunnelFx();if(!audioContext||audioContext.state!=='running')return;
     if(elapsed>1.2)return;
     const ctx=audioContext,t=ctx.currentTime,level=Number(volume.value)/100;
-    const bus=ctx.createGain();bus.gain.value=level*1.05;
+    const bus=ctx.createGain();bus.gain.value=level*1.45;
     const limiter=ctx.createDynamicsCompressor();limiter.threshold.value=-7;limiter.knee.value=12;limiter.ratio.value=8;limiter.attack.value=.003;limiter.release.value=.2;bus.connect(limiter);limiter.connect(ctx.destination);fxNodes.push(limiter);
     const noise=ctx.createBuffer(2,Math.ceil(ctx.sampleRate*5.4),ctx.sampleRate);
     for(let c=0;c<2;c++){const data=noise.getChannelData(c);let last=0;for(let i=0;i<data.length;i++){last=(last+(Math.random()*2-1)*.08)/1.02;data[i]=last*2.8;}}
     const source=ctx.createBufferSource();source.buffer=noise;
     const filter=ctx.createBiquadFilter();filter.type='bandpass';filter.Q.value=.65;filter.frequency.setValueAtTime(150,t);filter.frequency.exponentialRampToValueAtTime(2200,t+4.1);filter.frequency.exponentialRampToValueAtTime(180,t+5.2);
-    const swell=ctx.createGain();swell.gain.setValueAtTime(0,t);swell.gain.linearRampToValueAtTime(.07,t+1.15);swell.gain.exponentialRampToValueAtTime(.65,t+4.1);swell.gain.exponentialRampToValueAtTime(.001,t+5.3);
+    const swell=ctx.createGain();swell.gain.setValueAtTime(0,t);swell.gain.linearRampToValueAtTime(.18,t+.45);swell.gain.exponentialRampToValueAtTime(.70,t+4.1);swell.gain.exponentialRampToValueAtTime(.001,t+5.3);
     const pan=ctx.createStereoPanner?.();source.connect(filter);filter.connect(swell);if(pan){swell.connect(pan);pan.connect(bus);pan.pan.setValueAtTime(-.6,t);pan.pan.linearRampToValueAtTime(.6,t+2.3);pan.pan.linearRampToValueAtTime(0,t+4.4);}else swell.connect(bus);source.start(t);source.stop(t+5.4);
     fxNodes.push(source,bus,filter,swell);if(pan)fxNodes.push(pan);
     // Three audible movements: a warm lift, stereo glints, then a rounded arrival.
@@ -337,8 +338,8 @@
       space.pan.value=position;osc.connect(amp);amp.connect(space);space.connect(bus);space.connect(reverb);
       osc.start(t+start);osc.stop(t+start+duration);fxNodes.push(osc,amp,space);
     }
-    tone(65.4,0,.8,4.7,.40,0,'sine',98);
-    tone(130.8,.12,1.1,4.6,.16,-.15,'triangle',196);
+    tone(65.4,0,.35,4.7,.45,0,'sine',98);
+    tone(130.8,.06,.45,4.6,.24,-.15,'triangle',196);
     // Soft harmonics travel across the image rather than striking on the first frame.
     [261.63,392,523.25,784].forEach((f,i)=>tone(f,.38+i*.68,.24,1.65,.10+i*.016,i%2?.55:-.55));
     // The visual aperture opens at 4.1 s: a broad, rounded resonance with a bright tail.
@@ -350,32 +351,34 @@
   }
   function playArrivalAccent(){
     if(!audioContext||audioContext.state!=='running'||!backgroundWanted||document.hidden)return;
-    const ctx=audioContext,t=ctx.currentTime+.01,bus=ctx.createGain(),limiter=ctx.createDynamicsCompressor();
-    bus.gain.value=Number(volume.value)/100;
-    limiter.threshold.value=-9;limiter.knee.value=15;limiter.ratio.value=6;limiter.attack.value=.006;limiter.release.value=.24;
+    const ctx=audioContext,t=ctx.currentTime,bus=ctx.createGain(),limiter=ctx.createDynamicsCompressor();
+    bus.gain.value=Number(volume.value)/100*1.4;
+    limiter.threshold.value=-5;limiter.knee.value=8;limiter.ratio.value=10;limiter.attack.value=.002;limiter.release.value=.24;
     bus.connect(limiter);limiter.connect(ctx.destination);fxNodes.push(bus,limiter);
-    // Triggered by the actual reveal, not a guessed timestamp: a rounded "dong" and soft stereo tail.
+    // Triggered when the portal starts revealing the homepage, with a soft stereo tail.
     const delay=ctx.createDelay(.5),tail=ctx.createGain(),pan=ctx.createStereoPanner();
     delay.delayTime.value=.16;tail.gain.value=.22;pan.pan.value=.28;
     delay.connect(tail);tail.connect(pan);pan.connect(bus);fxNodes.push(delay,tail,pan);
-    [[130.8,65.4,.74,1.65,'sine'],[261.6,130.8,.19,1.35,'sine'],[523.25,523.25,.065,1.1,'sine']].forEach(([from,to,level,duration,type])=>{
+    // Upper body stays audible on small speakers; a short ramp avoids a click.
+    [[130.8,65.4,.85,1.65,'sine'],[261.6,130.8,.40,1.35,'sine'],[392,196,.16,.9,'triangle'],[523.25,523.25,.10,1.1,'sine']].forEach(([from,to,level,duration,type])=>{
       const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type=type;
       osc.frequency.setValueAtTime(from,t);osc.frequency.exponentialRampToValueAtTime(to,t+.42);
-      gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(level,t+.09);gain.gain.exponentialRampToValueAtTime(.0001,t+duration);
+      gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(level,t+.025);gain.gain.exponentialRampToValueAtTime(.0001,t+duration);
       osc.connect(gain);gain.connect(bus);gain.connect(delay);osc.start(t);osc.stop(t+duration);fxNodes.push(osc,gain);
     });
     setTimeout(()=>{if(fxNodes.includes(bus))stopTunnelFx();},1900);
   }
   window.ZRZAudio={
-    canAutoStart:()=>backgroundWanted||autoStopped,
+    canAutoStart:()=>true,
     startEntry:async()=>{
-      const request=++entryRequest;entryPending=true;portalAudioActive=true;entranceEnvelope();const audioStart=performance.now();
+      const request=++entryRequest;entryPending=true;entryLanded=false;portalAudioActive=true;entranceEnvelope();const audioStart=performance.now();
       closePlatform();stopTracks();pauseIntroduction();entrySeeking=true;selectTrack('refreshing');backgroundWanted=true;save('ambient-enabled-v27',true);
       try{background.currentTime=70;}catch{}
       if(audioContext)audioContext.resume().then(()=>{if(request===entryRequest&&portalAudioActive)startTunnelFx((performance.now()-audioStart)/1000);}).catch(()=>{});
       const ok=await startBackground();if(request!==entryRequest)return false;entryPending=false;if(ok)entrySeeking=false;return ok;
     },
-    endEntry:({land=false}={})=>{const wasActive=portalAudioActive;portalAudioActive=false;stopTunnelFx();if(land&&wasActive)playArrivalAccent();},
+    arriveEntry:()=>{if(!portalAudioActive||entryLanded)return;entryLanded=true;stopTunnelFx();playArrivalAccent();},
+    endEntry:({land=false}={})=>{const wasActive=portalAudioActive;portalAudioActive=false;if(land&&wasActive){if(!entryLanded){stopTunnelFx();playArrivalAccent();}}else stopTunnelFx();entryLanded=false;},
     cancelEntry:()=>{entryRequest++;if(entryPending){backgroundWanted=false;waitingForGesture=false;background.pause();entryPending=false;}},
     stopEntryFx:stopTunnelFx,
     silence:()=>{entryRequest++;entryPending=false;stopTunnelFx();backgroundWanted=false;waitingForGesture=false;save('ambient-enabled-v27',false);background.pause();renderBackground();}
