@@ -29,3 +29,8 @@
 .photo-sphere:not(.is-orbit-ready){display:flex;gap:12px;overflow:auto;aspect-ratio:auto;padding:25px 8px;height:auto}.photo-sphere:not(.is-orbit-ready) .sphere-photo{position:relative;left:auto;top:auto;transform:none!important;opacity:1!important;filter:none!important;flex:0 0 40%}
 @media(max-width:700px){.hero-words{align-self:auto;width:100%}.hero-film-links{margin-top:18px;gap:8px}.hero-film-links a{font-size:11px;gap:7px;padding:8px 10px}.topic-nav{gap:7px;padding:8px 0}.topic-nav a{font-size:11px;padding:8px 10px;min-height:40px}}
 .military-film-jump{display:inline-flex;gap:8px;padding:10px 13px;background:#354c36;color:#eef0df;border-radius:4px;font:12px/1.7 var(--sans);margin-top:20px;min-height:44px}.about .intro-video-figure{min-width:0}.about .intro-video-screen video{width:100%}
+
+/* Reading photo added 2026-10-15. */
+#moments .story-photo-grid{max-width:none;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);align-items:start}
+#memory-reading img{height:auto!important;object-fit:contain;background:transparent}
+@media(max-width:700px){#moments .story-photo-grid{grid-template-columns:1fr}}
