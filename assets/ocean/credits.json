@@ -1,0 +1,30 @@
+{
+  "created": "2026-10-19",
+  "generation": "OpenAI built-in image_gen",
+  "type": "Original generated decorative backgrounds and effect asset",
+  "personal_photos": "Existing real personal photo assets reused without pixel editing. Generated scenery does not depict a real visit by the site owner.",
+  "visual_reference": "Two user-supplied design videos. First establishes sunset/teal palette; second establishes a tentacle lifting the sea. Tutorial brand and screen recording are not included in shipped assets.",
+  "assets": [
+    {
+      "file": "sunset-sea-v2.webp",
+      "use": "日落海面，首页与入场",
+      "prompt": "Photorealistic 16:9 ocean at sunset from eye level just above water; pale blue sky, coral-peach and cream clouds, small golden sun and reflected light at right third, deep teal/navy rounded ocean waves and subtle foam, horizon at 55 percent height; calm upper left for dark editorial type; no land, boats, people, text, logo or UI."
+    },
+    {
+      "file": "underwater-world-v2.webp",
+      "use": "海底世界背景，人物照片和文字独立叠加",
+      "prompt": "Original cinematic underwater fantasy world, 16:9; realistic rippled water ceiling and warm sunset rays from upper right, spacious clear teal water upper left; classical Mediterranean stone arcade and city in lower half/right, faint amber windows, coral and tiny distant fish; atmospheric navy/aquamarine with gold light; no people, creature, text, logo or UI."
+    },
+    {
+      "file": "tentacle-v2.webp",
+      "use": "红色章鱼触手入场，保留透明度",
+      "prompt": "One continuous realistic red octopus arm as a cinematic VFX transparent cutout. Thick base enters upper right, broad hooked C/S curve, narrow curled gripping tip down-left. Wet red/burnt coral mottled skin, two rows of pale peach suction cups facing camera, warm sunset and cool teal fill. No body, eyes, extra limbs, water, text, logo or cropped gripping tip."
+    }
+  ],
+  "font": {
+    "file": "../fonts/noto-serif-sc-titles.ttf",
+    "family": "Noto Serif SC",
+    "source": "Google Fonts",
+    "license": "../fonts/NotoSerifSC-OFL.txt"
+  }
+}

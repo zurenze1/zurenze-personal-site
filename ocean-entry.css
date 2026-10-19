@@ -1,0 +1,26 @@
+.ocean-entry{position:fixed;inset:0;margin:0;padding:0;border:0;width:100vw;max-width:none;height:100svh;max-height:none;overflow:hidden;background:transparent;color:#e1eeea;isolation:isolate}
+.ocean-entry::backdrop{background:transparent}
+html.ocean-entry-active{overflow:hidden}
+.ocean-entry-world{position:absolute;inset:0;background:#062c40 url('assets/ocean/underwater-world-v2.webp') center/cover no-repeat;will-change:opacity}
+.ocean-entry-world::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#001e3133,transparent 70%)}
+.ocean-entry-sea{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.ocean-entry-ribbon{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.ocean-entry-arm{position:absolute;display:block;max-width:none;object-fit:contain;pointer-events:none;transform-origin:27.6% 68.4%;will-change:transform,top;filter:drop-shadow(0 14px 15px #002a3b55)}
+.ocean-entry-top{position:absolute;z-index:6;left:5%;right:5%;top:28px;display:flex;align-items:center;justify-content:space-between;gap:20px;color:#153948;font:500 12px/1.7 var(--sans);letter-spacing:.12em}
+.ocean-entry-top>span{transition:color .3s}
+.ocean-entry-skip{appearance:none;border:1px solid #173b4f66;border-radius:22px;background:#e8eee759;color:#163b4d;backdrop-filter:blur(12px);font:500 12px/1.5 var(--sans);padding:10px 16px;min-height:42px;cursor:pointer;letter-spacing:.05em}
+.ocean-entry-skip:focus-visible{outline:2px solid #edc383;outline-offset:5px}
+.ocean-entry-heading{position:absolute;left:7%;top:25%;pointer-events:none;color:#14384a}
+.ocean-entry-heading p{font:500 11px/1.8 var(--sans);letter-spacing:.22em;margin:0 0 22px}
+.ocean-entry-heading h2{font:400 clamp(54px,6.5vw,100px)/1.18 OceanEditorial,var(--serif);letter-spacing:-.04em;margin:0}
+.ocean-entry[data-phase=lift] .ocean-entry-top,.ocean-entry[data-phase=finish] .ocean-entry-top{color:#e4eee9}
+.ocean-entry[data-phase=lift] .ocean-entry-skip,.ocean-entry[data-phase=finish] .ocean-entry-skip{background:#062a3b66;border-color:#c8dfe878;color:#edf5f2}
+.ocean-entry-caption{position:absolute;z-index:6;bottom:32px;left:5%;font:400 10px/1.8 var(--sans);letter-spacing:.12em;color:#e3efeb;pointer-events:none;text-shadow:0 1px 8px #00283d}
+.ocean-entry-preview{position:absolute;z-index:8;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:6px;padding:7px;background:#032a3de6;border:1px solid #d5ecea55;border-radius:6px;backdrop-filter:blur(15px);white-space:nowrap}
+.ocean-entry-preview button,.ocean-preview-open{appearance:none;padding:9px 12px;min-height:39px;border:1px solid #d6e9e64d;background:#e5eee918;color:#e7f4eb;font:11px/1.5 var(--sans);border-radius:3px;cursor:pointer}
+.ocean-entry-preview button:hover{background:#e5eee92e}
+.ocean-preview-open{position:fixed;z-index:90;bottom:92px;left:24px;background:#092e3ee6;box-shadow:0 4px 15px #001b3033}
+.ocean-replay:disabled,.ocean-preview-open:disabled{opacity:.45;cursor:default}
+@media(max-width:700px){.ocean-entry-top{top:22px;left:22px;right:22px;font-size:10px;letter-spacing:.05em}.ocean-entry-skip{font-size:11px;padding:9px 12px;min-height:40px}.ocean-entry-heading{top:24%;left:24px}.ocean-entry-heading h2{font-size:49px}.ocean-entry-heading p{font-size:9px;margin-bottom:16px}.ocean-entry-caption{left:24px;bottom:32px;font-size:9px}.ocean-entry-world{background-position:58% center}}
+@media(prefers-reduced-motion:reduce){.ocean-entry{display:none!important}}
+@media(max-width:700px){.ocean-entry-preview{bottom:75px;gap:4px;width:calc(100% - 36px);justify-content:center;padding:6px}.ocean-entry-preview button{font-size:9px;padding:8px 6px;min-height:36px}.ocean-entry-caption{bottom:28px}.ocean-preview-open{bottom:90px;left:auto;right:20px;font-size:10px}}
