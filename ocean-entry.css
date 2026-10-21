@@ -24,3 +24,26 @@ html.ocean-entry-active{overflow:hidden}
 @media(max-width:700px){.ocean-entry-top{top:22px;left:22px;right:22px;font-size:10px;letter-spacing:.05em}.ocean-entry-skip{font-size:11px;padding:9px 12px;min-height:40px}.ocean-entry-heading{top:24%;left:24px}.ocean-entry-heading h2{font-size:49px}.ocean-entry-heading p{font-size:9px;margin-bottom:16px}.ocean-entry-caption{left:24px;bottom:32px;font-size:9px}.ocean-entry-world{background-position:58% center}}
 @media(prefers-reduced-motion:reduce){.ocean-entry{display:none!important}}
 @media(max-width:700px){.ocean-entry-preview{bottom:75px;gap:4px;width:calc(100% - 36px);justify-content:center;padding:6px}.ocean-entry-preview button{font-size:9px;padding:8px 6px;min-height:36px}.ocean-entry-caption{bottom:28px}.ocean-preview-open{bottom:90px;left:auto;right:20px;font-size:10px}}
+/* Water itself keeps moving even while a tentacle pose is inspected. */
+.sea-live-object{pointer-events:none}
+.sea-live-wrap{width:100%;height:100%;background:transparent}
+.sea-live-canvas{display:block;width:100%;height:100%;opacity:0}
+.sea-live-canvas[data-ready=true]{opacity:1}
+.ocean-entry-ribbon{z-index:2}
+.ocean-entry-arm{z-index:3}
+.ocean-entry .sea-curtain-lip{stroke:#83c8d0;opacity:.7}
+.ocean-entry .sea-curtain-shadow{stroke:#00384e;opacity:.6}
+.ocean-entry .sea-curtain-foam{stroke:#e6f4df;opacity:.85}
+.ocean-entry-top{z-index:6}
+.ocean-entry-tools{display:flex;gap:9px;align-items:center}
+.ocean-entry-sound{appearance:none;border:1px solid #194b6066;border-radius:22px;background:#e8eee759;color:#163b4d;font:500 11px/1.5 var(--sans);padding:10px 13px;min-height:42px;cursor:pointer;backdrop-filter:blur(12px)}
+.ocean-entry[data-phase=lift] .ocean-entry-sound,.ocean-entry[data-phase=finish] .ocean-entry-sound{background:#062a3b99;color:#edf5f2;border-color:#c8dfe878}
+.ocean-entry-sound:focus-visible{outline:2px solid #edc383;outline-offset:4px}
+@media(max-width:700px){.ocean-entry-top>span small{display:none}.ocean-entry-tools{gap:6px}.ocean-entry-sound{font-size:10px;padding:9px 10px;min-height:40px}.ocean-entry-preview button{font-size:9px;padding:8px 5px}}
+/* v4: articulated arm and water passing both behind and in front of its curled tip. */
+.ocean-entry-tentacle,.ocean-entry-grip-water{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none}
+.ocean-entry-tentacle{z-index:3;filter:drop-shadow(0 9px 10px #002c3e44)}
+.ocean-entry-grip-water{z-index:4}
+.ocean-entry[data-phase=curl] .ocean-entry-top{color:#e4eee9}
+.ocean-entry[data-phase=curl] :is(.ocean-entry-skip,.ocean-entry-sound){background:#062a3b88;border-color:#c8dfe878;color:#edf5f2}
+.ocean-entry .sea-curtain-foam,.ocean-entry .sea-curtain-lip,.ocean-entry .sea-curtain-shadow,.ocean-entry .sea-drips{display:none}

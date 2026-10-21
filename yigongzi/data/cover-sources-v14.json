@@ -1,0 +1,32 @@
+{
+  "observed_on": "2026-10-14",
+  "purpose": "Original-cover quotations identifying two 2019 works; no original-production credit claimed by portfolio author.",
+  "covers": [
+    {
+      "site_file": "images/period-project-1-v14.jpg",
+      "original_title": "【艺术很难吗】谭盾：我造了一座怪房子，把音乐”拉下神坛”",
+      "original_link": "https://www.bilibili.com/video/BV1M4411A7gu/",
+      "original_author": "原作：意外艺术；访谈嘉宾：谭盾",
+      "source_image": "http://i2.hdslb.com/bfs/archive/d9e856addaa5426194a4a045ad48d00ca8322b49.jpg",
+      "source_field": "B站官方view data.pic",
+      "date_scope": "该BV发布日，非推测拍摄日",
+      "cover_scope": "该BV当前原作封面；未核历史上封面是否变更",
+      "observed_on": "2026-10-14",
+      "sha256": "99a91545370b1297d738f5cf60ea9f71c327cde51b44dfeb5e83f7845b16fb40",
+      "independent_reuse_permission": "not obtained"
+    },
+    {
+      "site_file": "images/period-project-2-v14.jpg",
+      "original_title": "“好好说话”，并不是万能的 | 《艺术很难吗之壹公里》视频",
+      "original_link": "https://ishare.ifeng.com/c/s/7oEVzP1l80i",
+      "original_author": "原作：意外艺术；嘉宾：叶逢春；当期文章讲述意公子采访",
+      "source_image": "http://e0.ifengimg.com/02/2019/0712/4AEFB326E2CEC7EC0658E1898797D9CBB118B004_size33_w864_h486.jpg",
+      "source_field": "videosPluginData.bigPosterUrl；og:img_video",
+      "date_scope": "确认的是当期节目介绍页发布时间；内嵌视频单独首发时刻未核，不用媒体URL里的07/12倒推",
+      "cover_scope": "该当期页内嵌视频的原始封面/缩略帧，非抖音封面",
+      "observed_on": "2026-10-14",
+      "sha256": "cc4119ac68148dbb067aa10ef7a5f918c23909bab7b918b8c690fb3fb7509b3c",
+      "independent_reuse_permission": "not obtained"
+    }
+  ]
+}

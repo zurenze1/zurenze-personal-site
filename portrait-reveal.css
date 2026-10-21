@@ -1,0 +1,23 @@
+/* React Bits pointer reveal h3: the real img stays intact below the print layer.
+   Input is passively observed on .poster-hero, not intercepted by this canvas. */
+.poster-hero:has(.portrait-reveal-canvas) {
+  -webkit-user-select: none;
+  user-select: none;
+}
+body.index [data-portrait-halftone="personal-photo"] > .portrait-reveal-canvas {
+  position: absolute;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+  touch-action: auto;
+  max-width: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  clip-path: inset(0);
+}
+body.index [data-portrait-halftone="personal-photo"] > .portrait-reveal-canvas[hidden] { display: none; }
+html[data-motion="off"] .portrait-reveal-canvas { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  body.index [data-portrait-halftone="personal-photo"] > .portrait-reveal-canvas { display: none; }
+}

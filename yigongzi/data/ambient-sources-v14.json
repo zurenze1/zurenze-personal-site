@@ -1,0 +1,109 @@
+{
+  "purpose": "Decorative website sounds; intentionally selected wooden opening Foley over the existing bronze-gate imagery, not actual sounds recorded at the pictured garden.",
+  "sources": [
+    {
+      "title": "WIND AND LEAVES",
+      "author": "SamuelGremaud",
+      "page": "https://freesound.org/people/SamuelGremaud/sounds/544844/",
+      "license": "CC0 1.0 Universal",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    {
+      "title": "Rain_01.wav",
+      "author": "Q.K.",
+      "page": "https://freesound.org/people/Q.K./sounds/56306/",
+      "license": "CC0 1.0 Universal",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    {
+      "title": "Water Drip Free",
+      "author": "AardsReal",
+      "page": "https://freesound.org/people/AardsReal/sounds/842164/",
+      "license": "CC0 1.0 Universal",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    {
+      "title": "Sliding_Wooden_Cabinet_Door_1 (of 2)",
+      "author": "Rudmer_Rotteveel",
+      "page": "https://freesound.org/people/Rudmer_Rotteveel/sounds/364104/",
+      "license": "CC0 1.0 Universal",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    {
+      "title": "Original warm lyrical flute phrase — real sustained flute samples arranged at 76 BPM",
+      "author": "VSCO 2 CE: Versilian Studios / Sam Gossner; Ivy Audio / Simon Dalzell. Sample cutting: Elan Hickler / Soundemote.",
+      "page": "https://github.com/sgossner/VSCO-2-CE",
+      "license": "CC0 1.0 Universal (instrument recordings)",
+      "license_url": "https://raw.githubusercontent.com/sgossner/VSCO-2-CE/440300901dfe9275fd84e0b7763af1f8443ae62e/LICENSE",
+      "content": "Original sample arrangement for this site, not a live full-phrase performance or a Chinese bamboo-flute recording"
+    }
+  ],
+  "processing_v13": {
+    "scope": "Entrance door and cultured flute only; three times decoded amplitude, +9.542 dB, PCM16 WAV; source recordings, arrangement and ambient bed unchanged.",
+    "derived_files": [
+      {
+        "old": "door-wood-v7.mp3",
+        "new": "door-wood-v13.wav",
+        "source_sha256": "862470f2def1f7a06decf3e02751d332f1617a76d7efc51dc167a6ede053399e",
+        "output_sha256": "d2131e7f125eaabc4cd627a0543ff875af56dc53b8290746489d0c59189354e2",
+        "amplitude_multiplier": 3,
+        "gain_db": 9.542425094393248,
+        "duration": "1.569388",
+        "decoded_peak": 0.664215087890625,
+        "max_sample_error_from_triple": 3.051694840118524e-05,
+        "source_unchanged": true
+      },
+      {
+        "old": "intro-flute-cultured-v8.mp3",
+        "new": "intro-flute-cultured-v13.wav",
+        "source_sha256": "4ad4c0c31806cb82655dc21b77a764b3096aa5458e4a1d6c63e951bbd27b5fbd",
+        "output_sha256": "d9f8e9133b61590de0d240b1a8e1ca70734c8516c526d2304a7e267b3a2aac24",
+        "amplitude_multiplier": 3,
+        "gain_db": 9.542425094393248,
+        "duration": "9.200000",
+        "decoded_peak": 0.596527099609375,
+        "max_sample_error_from_triple": 3.0517287086695433e-05,
+        "source_unchanged": true
+      }
+    ]
+  },
+  "processing_v14": {
+    "scope": "Door and flute: further gain of three relative to v13, with .75 lookahead peak limit, preserving timing and original recordings.",
+    "derived_files": [
+      {
+        "source": "door-wood-v13.wav",
+        "output": "door-wood-v14.wav",
+        "input_gain_multiplier": 3,
+        "input_gain_db": 9.542425094393248,
+        "limiter_ceiling": 0.75,
+        "source_unchanged": true,
+        "source_sha256": "d2131e7f125eaabc4cd627a0543ff875af56dc53b8290746489d0c59189354e2",
+        "sha256": "d6fd4236dda5a5ecf65154991b8216291d9c09b4404f83d0c76cedab18da0cef",
+        "duration_seconds": 1.5693877551020408,
+        "sample_peak": 0.75,
+        "rms_ratio_to_v13": 2.0384033708373233,
+        "default_volume": 0.55,
+        "default_output_peak": 0.41250000000000003,
+        "processing": "volume=3,alimiter=limit=0.75:level=false:attack=5:release=70:latency=true,apad,atrim=duration=1.569387755",
+        "note": "Threefold input gain; limiter reduces transient peaks, so final output is not an exact threefold waveform."
+      },
+      {
+        "source": "intro-flute-cultured-v13.wav",
+        "output": "intro-flute-cultured-v14.wav",
+        "input_gain_multiplier": 3,
+        "input_gain_db": 9.542425094393248,
+        "limiter_ceiling": 0.75,
+        "source_unchanged": true,
+        "source_sha256": "d9f8e9133b61590de0d240b1a8e1ca70734c8516c526d2304a7e267b3a2aac24",
+        "sha256": "3003d82bf1b3c89e56251c292e526e761b88e1ac17ebd6c073b30214113388f8",
+        "duration_seconds": 9.2,
+        "sample_peak": 0.75,
+        "rms_ratio_to_v13": 1.7982872578211377,
+        "default_volume": 0.77,
+        "default_output_peak": 0.5775,
+        "processing": "volume=3,alimiter=limit=0.75:level=false:attack=5:release=70:latency=true,apad,atrim=duration=9.200000000",
+        "note": "Threefold input gain; limiter reduces transient peaks, so final output is not an exact threefold waveform."
+      }
+    ]
+  }
+}
